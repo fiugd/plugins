@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<!-- <script src="https://viebel.github.io/klipse/repo/js/bs.js"></script> -->
+		<!-- <script src="https://viebel.github.io/klipse/repo/js/stdlibBundle.js"></script> -->
+		<script src="https://reasonml.github.io/js/bsReasonReact.js"></script>
+		<script src="https://reasonml.github.io/js/refmt.js"></script>
+		<script src="https://reasonml.github.io/js/stdlibBundle.js"></script> 
+	</head>
+
+	<style>
+		body {
+			margin: 1.5em;
+			overflow: hidden;
+			color: #ccc;
+			font-family: monospace;
+		}
+	</style>
+
+	<script type="text/ocaml" id="source">{{template_input}}</script>
+
+	<script id="defaultSrc" type="text/ocaml">
+		let log: int -> unit = [%raw {|
+			function(a){
+				return update(a + " ");
+			}
+		|}]
+
+		let rec fib n =
+			match n with
+			| 0|1 -> 1
+			| n -> (fib (n - 1)) + (fib (n - 2))
+		let _ = for x=0 to 8
+			do log( fib x )
+			done
+	</script>
+
+	<body>
+		<pre id="output"></pre>
+	</body>
+
+	<script type="module">
+		(() => {
+			const outputPre = document.getElementById('output');
+			const getScript = (id) => document.getElementById(id)
+				.textContent.replace(/^\t\t/gm, '');
+			const logJSON = obj => console.log(JSON.stringify(obj, null, 2));
+
+			const source =  getScript("source");
+			const input = source === "{{"+"template_input"+"}}"
+				? getScript("defaultSrc")
+				: source;
+
+			console.log(`ocaml version: ${ocaml.version}`);
+			//window.$jscomp
+			//window.reason
+
+			const output = ocaml.compile(input);
+			const {
+				js_error_msg, row, column, endRow, endColumn, text, type,
+				js_code
+			} = output;
+
+			//logJSON(output)
+			if(js_error_msg){
+				outputPre.innerHTML += js_error_msg;
+				return;
+			}
+			const run = (code) => {
+				const update = (...args) => {
+					outputPre.innerHTML += args.join(' ');
+				};
+				const exports = {};
+				eval(code);
+			}
+			run(js_code);
+		})()
+	</script>
+
+</html>
+
+<!--
+
+https://github.com/reasonml/reasonml.github.io/tree/master/js
+
+https://reasonml.github.io/en/try
+
+https://rescript-lang.org/try (ML goes away completely?)
+
+-->

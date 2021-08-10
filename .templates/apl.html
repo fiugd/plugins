@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en" id="html">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<script src="https://unpkg.com/apl@0.1.15/lib/apl.js"></script>
+		<script src="/shared/vendor/stylus.min.js"></script>
+	</head>
+
+	<example_code style="display:none;">
+<!--
+11 11 ⍴ ⍳ 121
+-->
+	</example_code>
+
+	<code_in>
+<!--
+{{template_input}}
+-->
+	</code_in>
+	<body></body>
+</html>
+
+<script id="global-functions">
+		const alreadyAppended = {};
+		const appendScript = (url) => {
+				if(alreadyAppended[url]){ return; }
+				return new Promise((resolve, reject) => {
+						alreadyAppended[url] = true;
+						const script = document.createElement('script');
+						script.crossOrigin = "anonymous";
+						script.onload = resolve;
+						script.src = url;
+						document.head.appendChild(script);
+				});
+		};
+		const appendStyleSheet = (url) => {
+				if(alreadyAppended[url]){ return; }
+				return new Promise((resolve, reject) => {
+						alreadyAppended[url] = true;
+						const style = document.createElement('link');
+						style.rel = "stylesheet";
+						style.crossOrigin = "anonymous";
+						style.onload = resolve;
+						style.href = url;
+						document.head.appendChild(style);
+				});
+		};
+		const appendCompiledStyleSheet = (url) => {
+				if(alreadyAppended[url]) return;
+				return new Promise(async (resolve, reject) => {
+						alreadyAppended[url] = true;
+						const cssBody = await (await fetch(url)).text();
+						const style = document.createElement('style');
+						style.id = 'foo-'+Math.random().toString().replace('0.','')
+						style.textContent = stylus.render(cssBody);
+						document.head.appendChild(style);
+						resolve();
+				});
+		};
+		window.appendUrls = async (urls=[]) => {
+			const queue = Array.isArray(urls)
+				? [ ...urls ]
+				: [ urls ];
+
+			for(var i=0; i<queue.length; i++){
+				const url = queue[i];
+				if(["css"].includes(url.split('.').pop()) ){
+					await appendStyleSheet(url);
+					continue;
+				}
+				if(["styl"].includes(url.split('.').pop()) ){
+					await appendCompiledStyleSheet(url);
+					continue;
+				}
+				if(url.split('.').pop() === "js"){
+					await appendScript(url);
+					continue;
+				}
+				console.error('error appendUrl: ' + url);
+			}
+		}
+</script>
+
+<script id="template-input">
+	const codeIn = document.querySelector('code_in');
+	let codeFromComment = Array.from(codeIn.childNodes)
+			.filter(x => x.nodeType === 8)
+			.map(x => x.data).join('\n');
+	if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+		codeFromComment = `
+
+		`.replace(new RegExp('    ', 'g'), '');
+	}
+
+	const imports = [];
+	codeFromComment = codeFromComment
+		.split('\n')
+		.filter(x => {
+			const isImport = x.includes(';; import');
+			if(isImport){
+				imports.push(x.replace(';; import', '').trim())
+			}
+			return !isImport;
+		})
+		.join('\n');
+	window.codeFromComment = codeFromComment;
+</script>
+
+<script id="run-code" type="module">
+	(async() => {
+		const deps = [
+			...imports
+		];
+		await appendUrls(deps);
+		const run = (aplCode) => {
+			let result, error;
+			try {
+				result = apl(aplCode);
+			} catch(e){
+				error = e;
+			}
+			return { result, error };
+		};
+
+		const displayResults = ({result, error}) => {
+			if(error) {
+				document.body.innerHTML += 
+				`<div style="color:#b14242;">${error.name}:</div>
+				<div style="color:#b14242;">${error.message}</div>
+				`;
+				return
+			}
+			document.body.innerHTML += `
+			<div style="white-space: pre;font-family: monospace;line-height: 1.08em;overflow:auto;">${result}</div>
+			`;
+		};
+
+		if(codeFromComment.trim()){
+			
+			return displayResults(
+				run(codeFromComment.trim())
+			);
+		}
+		const example = document.body.querySelector('example_code');
+		const codeFromExample = Array.from(example.childNodes)
+			.filter(x => x.nodeType === 8)
+			.map(x => x.data).join('\n');
+		displayResults(
+			run(codeFromExample.trim())
+		);
+	})()
+</script>
+
+<style>
+	.no-preview {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 5vw;
+		color: #666;
+	}
+
+	body:before {
+		content: '';
+		display: block;
+		height: 35px;
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		right: 0px;
+		z-index: 1;
+		background: #1d1d1deb;
+	}
+
+	body:after {
+		content: '';
+		display: block;
+		height: 5px;
+		position: absolute;
+		left: 0px;
+		top: 35px;
+		right: 0px;
+		z-index: 1;
+		background: linear-gradient(180deg, #1d1d1deb, transparent);
+	}
+
+	body {
+		margin: 0px;
+		/*height: calc(100vh - 40px);*/
+		overflow: hidden;
+		color: #ccc;
+		font-family: sans-serif;
+		background: #1a1a1a;
+	}
+
+	#container {
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+		/*padding: 30px;*/
+		/*margin-bottom: 20px;*/
+		/*padding-top: 40px;padding-bottom: 40px;*/
+	}
+
+	#container img {
+		width: 100%;
+		max-height: 400px;
+		object-fit: cover;
+		object-position: center;
+		margin-left: -30px;
+		background-color: transparent !important;
+	}
+
+	#container hr {
+		border: 1px dotted #999;
+		border-top: 0px;
+		margin-left: -30px;
+	}
+
+	#container.markdown-body {
+		color: #acb5be;
+	}
+
+	#container>*:last-child {
+		margin-bottom: 200px !important;
+	}
+
+	#container.markdown-body * {
+		border-color: #777 !important;
+	}
+
+	blockquote {
+		margin: 0;
+		border-left: 5px solid #7a7a7a;
+		font-style: italic;
+		padding: 1px 20px;
+		text-align: left;
+	}
+
+	.selected:after {
+		content: '';
+		display: block;
+		background: #e2961d;
+		position: absolute;
+		left: -100px;
+		right: 0px;
+		top: -10px;
+		bottom: -10px;
+		z-index: -1;
+	}
+
+	.selected {
+		color: black;
+		position: relative;
+		/*font-size: 35px !important;*/
+	}
+
+	li.selected,
+	ul.selected,
+	h2.selected,
+	h3.selected {
+		margin-left: 0.5%;
+		zoom: 2 !important;
+	}
+
+	#container.markdown-body input[type=checkbox] {
+		visibility: hidden !important;
+		position: relative !important;
+		color: inherit !important;
+	}
+
+	#container.markdown-body input[type=checkbox]:before {
+		visibility: visible !important;
+		position: absolute !important;
+		font-size: 24px !important;
+		top: -12px !important;
+		left: -3px !important;
+		content: '☐' !important;
+	}
+
+	#container.markdown-body input[type=checkbox]:checked:before {
+		content: '✓' !important;
+		color: #8BC34A !important;
+	}
+
+	#container.markdown-body .selected input[type=checkbox]:checked:before {
+		color: black !important;
+	}
+
+	#container.markdown-body .highlight pre,
+	#container.markdown-body pre {
+		background-color: #ffffff11;
+	}
+
+	body {
+		margin: 40px;
+		background: #1a1a1a;
+	}
+	code {
+		color: #888;
+	}
+
+	h3 {
+		margin-top: 3em;
+		margin-bottom: 2em;
+	}
+
+	.language {
+		/* background: #2d2d2d; */
+		margin-top: 2.5em;
+		overflow-x: hidden;
+		overflow-y: hidden;
+		color: #d8d8d8;
+		display: block;
+		margin-bottom: 18px;
+		font-size: 2.4vw;
+		/* line-height: 1.3vw; */
+	}
+
+	.input-display { display: none; }
+
+	.code-input {
+		height: 500px;
+		display: none;
+	}
+
+	.language::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	.language::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.language::-webkit-scrollbar-thumb {
+		background: #888;
+	}
+
+	.language::-webkit-scrollbar-thumb:hover {
+		background: #555;
+	}
+
+	.code-output span {
+		width: 10px;
+		height: 10px;
+		display: inline-block;
+		overflow: hidden;
+	}
+
+	pre {
+		margin-top: -3em;
+	}
+
+	span.mark {
+		color: #E91E63;
+		background: #E91E63;
+		border-radius: 50%;
+	}
+
+	span.blank {
+		color: #222;
+		background: #444;
+		border: 1px solid #222;
+		box-sizing: border-box;
+	}
+</style>

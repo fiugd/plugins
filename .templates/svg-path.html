@@ -1,0 +1,201 @@
+<html>
+	<style>
+		body {
+			margin: 0px;
+			overflow: hidden;
+			color: #ccc;
+			font-family: sans-serif;
+			background: #1a1a1a;
+		}
+		svg {
+			width: 100vw;
+			height: 100vh;
+		}
+	</style>
+
+	<script id="source" type="template-source">{{template_input}}</script>
+
+	<script id="default" type="template-default">
+		M 7 18.6
+		C 5.5 18 5 17 5.25 16.5
+		C 6 15.5 7 16 7 17
+		C 7.6 18 8.6 17.7 8.8 16
+		C 9 16 9 9.8 8.9 10
+		C 9 9 8.7 4 9.5 2.5
+		C 10.4 1 12 0.9 13.2 1.3
+		C 14.3 1.8 14.7 2.5 14.36 3.1
+		C 14 4 12.8 3.8 12.6 3
+		C 12.3 2.1 11.4 2.2 11 3
+		C 10.6 3.6 10.8 9 10.8 9.5
+		C 10.8 9.9 11 14.8 10.4 16.6
+		C 10 18.3 9 18.9 7 18.6
+		Z
+
+		M 0 10
+		C 0 16 4 20 10 20
+		C 16 20 20 16 20 10
+		C 20 4 16 0 10 0
+		C 4 0 0 5 0 10
+		Z
+
+		#M 0 0
+		#L 20 0
+		#L 20 20
+		#L 0 20
+		#Z
+
+		viewBox = -0.5 -0.5 21 21
+		stroke-width = 0.03
+		stroke = #444
+		fill = #0a0a0a
+		#stroke-linecap = butt
+		#shape-rendering = crispEdges
+	</script>
+
+	<script id="template" type="template-default">
+		<svg
+			version="1.1"
+			xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+			viewBox="{{viewBox}}"
+			width="20"
+			height="20"
+		>
+			<path d="{{path}}" {{attributes}}/>
+		</svg>
+	</script>
+
+	<body></body>
+
+	<script>
+		const getScript = (id) => document.getElementById(id)
+			.textContent.replace(/^\t\t/gm, '');
+		const fillTemplate = (template, values) => Object.keys(values)
+			.reduce((a,o) => a
+				.replace(new RegExp(`{{${o}}}`, 'g'), values[o]),
+			template);
+		const process = (pathText) => {
+			const attrs = {};
+			let viewBox = "0 0 0 0";
+			const lineFilter = line => {
+				if(/^#/.test(line)) return false;
+				const isAttrLine = line.includes('=');
+				if(!isAttrLine) return true;
+				const [key, value] = line.split('=')
+					.map(x => x.trim());
+				if(key === 'viewBox'){
+					viewBox = value;
+					return;
+				}
+				attrs[key] = value;
+			};
+			const path = `\n${
+				pathText.split('\n').filter(lineFilter)
+					.join('\n').trim()
+			}\n`;
+			const attributes = Object.entries(attrs)
+				.map(([k, v]) => `${k}="${v}"`)
+				.join(' ');
+			return { attributes, path, viewBox };
+		};
+		const source = getScript('source');
+		const template = getScript('template');
+
+		const config = process(
+			source === "{{"+"template_input"+"}}"
+				? getScript('default')
+				: source
+		);
+
+		const filled = fillTemplate(template, config);
+		document.body.innerHTML += filled;
+	</script>
+
+</html>
+
+
+<!--
+filename.svg-path
+
+the idea here is to only edit the svg path but preview the full svg
+
+this would work like https://yqnn.github.io/svg-path-editor/
+and it would have syntax highlights and maybe auto format which makes it easy to parse/edit
+
+https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+
+
+Very Important Side Note
+
+this should probably be the first template that does
+	- hot reload based on changes from editor
+	- push updates to file based on user interaction
+
+this is mainly because this is a super-simple use case
+
+Assumptions
+1. there is toggle button in preview to show/hide grid
+2. there is an attribute in svg-path file "show-grid"
+
+Scenario 1: hot reload
+1. editor changes the value of show-grid
+2. preview listens and instead of reloading the whole page, modifies the value
+	- this is sorta like virtual dom distributed across frames/sw
+
+Scenario 2: push updates
+1. when user clicks this button in template, tell SW that file has changed to toggle the value of "show-grid"
+2. tell the main application that file has changed
+3. editor should update
+
+
+CONSIDER USING:
+
+- ohmjs for syntax parsing
+
+for figuring out what changed
+
+- diff-match-patch
+- https://bestofjs.org/projects/jsdiff
+- https://github.com/flitbit/diff
+
+- mutation observer on #source
+
+var element = document.querySelector('#test');
+setTimeout(function() {
+	element.setAttribute('data-text', 'whatever');
+}, 5000)
+
+var observer = new MutationObserver(function(mutations) {
+	mutations.forEach(function(mutation) {
+		if (mutation.type == "attributes") {
+			console.log("attributes changed")
+		}
+	});
+});
+
+observer.observe(element, {
+	attributes: true //configure it to listen to attribute changes
+});
+
+
+
+Other Side Notes
+
+I start thinking, could an HTML page be replaced with an SVG
+Then I think(and thought before), couldn't you just use a canvas and maybe WebGL?
+https://medium.com/young-coder/the-future-web-will-canvas-rendering-replace-the-dom-847be872884c
+https://stackoverflow.com/questions/6856953/does-it-make-sense-to-create-canvas-based-ui-components
+https://makepad.dev/
+
+
+a similar thing (as with .svg-path) might be done with an html canvas (.canvas)
+(it's essentially just a javascript file, but canvas is already created and wrapped in html)
+
+// ctx ad canvas are globabl vars already initiated
+ctx.fillStyle = 'rgb(250,0,0)';
+ctx.fillRect(10, 10, 55, 50);
+
+ctx.fillStyle = 'rgba(0, 0, 250, 0.5)';
+ctx.fillRect(30, 30, 55, 50);
+
+
+-->
