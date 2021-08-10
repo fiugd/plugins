@@ -1,4 +1,4 @@
-( import ../../shared.styl )
+( import ../shared.styl )
 
 : FIB ( n -- fib )
   0 1 ROT 0

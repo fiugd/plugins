@@ -1,4 +1,4 @@
-// import ../../shared.styl
+// import ../shared.styl
 
 program Fibonacci;
 var i : integer;

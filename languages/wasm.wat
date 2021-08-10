@@ -1,4 +1,4 @@
-;; import ../../shared.styl
+;; import ../shared.styl
 
 ;; https://hacks.mozilla.org/2017/02/creating-and-working-with-webassembly-modules/
 ;; https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format

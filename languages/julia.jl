@@ -1,4 +1,4 @@
-# import ../../shared.styl
+# import ../shared.styl
 #=
 
 use https://github.com/Keno/julia-wasm

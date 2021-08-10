@@ -1,4 +1,4 @@
--- import ../../shared.styl
+-- import ../shared.styl
 
 local function fib(n)
   local function inner(m)
