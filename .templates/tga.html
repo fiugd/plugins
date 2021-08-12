@@ -1,6 +1,10 @@
 <!--
 use https://github.com/schmittl/tgajs
+alt: https://github.com/DeviateFish/libtga
 -->
+
+<script src="/crosshj/fiug-plugins/vendor/tga.js"></script>
+
 
 <style>
 	::-webkit-scrollbar { width: 5px; }
@@ -15,28 +19,28 @@ use https://github.com/schmittl/tgajs
 		justify-content: center;
 		align-items: center;
 	}
-	body img { width: 100%; image-rendering: pixelated; }
+	body canvas { width: 100%; image-rendering: pixelated; }
 
 </style>
 
 <body></body>
 
 <script>
-	function checkImageSupport(){
-		if(document.querySelector('picture').clientHeight > 1) return;
-
-		console.error(`Image is not supported in this browser, should create a message that says so in DOM!`);
-		//onload="javascript: checkImageSupport()"
-	}
-if(document.location.href.includes('.tga')){
-	const src = document.location.href.replace('/::preview::/', '');
-	document.body.innerHTML = `
-<picture>
-	<source type="image/x-tga" srcset="${src}">
-	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-	onload="javascript: checkImageSupport()"
->
-</picture>
-`.trim();
-}
+	var showFile = function(filename) {
+		var tga = new TGA();
+		try {
+		tga.open(filename, function() {
+			const tgaCanvas = tga.getCanvas();
+			tgaCanvas.dataset.src=filename;
+			document.body.appendChild(tgaCanvas);
+		});
+		} catch(e){
+			console.log('error');
+		}
+	};
+	const src = document.location.href.includes('.tga')
+		? document.location.href.replace('/::preview::/', '')
+		: '/crosshj/fiug-plugins/vendor/tga-test.tga';
+	showFile(src);
 </script>
+
