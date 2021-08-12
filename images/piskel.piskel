@@ -1,0 +1,14 @@
+{
+	"modelVersion": 2,
+	"piskel": {
+		"name": "Hello World Piskel",
+		"description": "",
+		"fps": 1,
+		"height": 3,
+		"width": 3,
+		"layers": [
+			"{\"name\":\"Layer 1\",\"opacity\":1,\"frameCount\":2,\"chunks\":[{\"layout\":[[0],[1]],\"base64PNG\":\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAADCAYAAACwAX77AAAAIElEQVQYV2NkwAEYoeL/GRgYwOz/DAz/GRkYGGESGPoAadUDBMB6VCEAAAAASUVORK5CYII=\"}]}"
+		],
+		"hiddenFrames": []
+	}
+}

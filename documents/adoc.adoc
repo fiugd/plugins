@@ -1,0 +1,9 @@
+// comments are ignored
+
+## simple adoc example
+
+----
+one
+two
+three
+----

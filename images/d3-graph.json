@@ -1,0 +1,19 @@
+{
+	"file-type": "d3-graph",
+	"nodes":[
+		{ "id": "0", "name":"three","radius":25, "color": "red"},
+		{
+			"id": "1",
+			"name": "one",
+			"radius": 30,
+			"x": 100, "y": 0,
+			"fx": 100, "fy": 100,
+			"children": [
+				{"name": "two", "color": "slategrey", "radius": 20}
+			]
+		}
+	],
+	"links":[
+		{"source":0,"target":1,"weight":1, "left": true, "right": true }
+	]
+}
