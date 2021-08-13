@@ -14,7 +14,7 @@ https://codemirror.net/mode/stylus/index.html
 				content="react, using preact and transpiled with babel">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="mobile-web-app-capable" content="yes">
-		<script src="/shared/vendor/stylus.min.js"></script>
+		<script src="/crosshj/fiug-plugins/vendor/stylus.min.js"></script>
 		<script src="https://unpkg.com/zone.js@0.11.3/dist/zone.min.js"></script>
 		<base target="_blank" href="../../">
 </head>
@@ -32,7 +32,9 @@ https://codemirror.net/mode/stylus/index.html
 		}
 </style>
 
-<body></body>
+<body>
+	<div id="root"></div>
+</body>
 
 <code_in>
 <!--
@@ -43,13 +45,19 @@ https://codemirror.net/mode/stylus/index.html
 <script type="module">
 		import {
 				html, Component, render, useState, useCallback, useEffect, h
-		} from '/shared/vendor/preact.standalone.module.js';
+		} from '/crosshj/fiug-plugins/vendor/preact.standalone.module.js';
 		window.Component = Component;
 		window.render = render;
 		window.useState = useState;
 		window.useCallback = useCallback;
 		window.useEffect = useEffect;
-		window.React = { createElement: h, createClass: h };
+		window.React = {
+			createElement: h,
+			createClass: h,
+			useState: useState,
+			useCallback: useCallback,
+			useEffect: useEffect
+		};
 		window.h = h;
 </script>
 
@@ -72,7 +80,7 @@ https://codemirror.net/mode/stylus/index.html
 				.map(x => x.data).join('\n');
 		if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
 			codeFromComment = `
-				import '../hello.scss';
+				//import '../hello.scss';
 				function App(){ return 'hello world'; }
 			`;
 		}
@@ -80,25 +88,31 @@ https://codemirror.net/mode/stylus/index.html
 		const inputDOM = document.getElementById('jsxScript');
 		let input = inputDOM.innerText;
 
-		if (codeFromComment.length > 20) {
-				const obilgatory = `
-								const React = window.React;
-								const Component = window.Component;
-								const render = window.render;
-								const h = window.h;
-								window.createClass = window.h;
-								window.createElement = window.h;
+		const transformReact = (src, { includeRender }={}) => {
+			const obilgatory = `
+					const React = window.React;
+					const Component = window.Component;
+					const render = window.render;
+					const h = window.h;
+					window.createClass = window.h;
+					window.createElement = window.h;
 
-								//{{ IMPORTS }}
+					//{{ IMPORTS }}
 
-								//console.log(window.h);
-				`.replace(/            /g, '');
-				const obilgatory2 = `
-								render(<App />, document.body);
-				`.replace(/            /g, '');
-				input = obilgatory
-						+ codeFromComment
+					//console.log(useState);
+				`.replace(/					/g, '');
+				const obilgatory2 = includeRender
+				? `
+					render(<App />, document.body);
+				`.replace(/					/g, '')
+				: '';
+				return obilgatory
+						+ src
 						+ obilgatory2;
+		};
+
+		if (codeFromComment.length > 20) {
+			input = transformReact(codeFromComment, { includeRender: true });
 		}
 
 		const xfrmScript = document.createElement('script');
@@ -169,41 +183,105 @@ https://codemirror.net/mode/stylus/index.html
 				},
 			};
 		}
+		function removeJsxImportsPlugin() {
+			return {
+				visitor: {
+					ImportDeclaration(path) {
+						let isJsx;
+						try { isJsx = path.node.source.value.includes('.jsx'); }
+						catch(e){}
+						if(!isJsx) return;
+						path.remove();
+						return;
+					},
+				},
+			};
+		}
 		async function transformDeps(){
 			let output = [];
 			for(var i=0; i<jsxToTransform.length; i++){
 				const node = jsxToTransform[i];
-				const source = await (await fetch(node.source.value)).text();
-				output.push(
-					Babel.transform(source, {
-							plugins: [ myJsxPlugin ],
-							presets: [
-									["env", { "modules": false }],
-									'react'
-							],
-							sourceType: "module"
-					}).code.replace('export ', '')
+				const source = await fetch(node.source.value).then(x => x.text());
+				// output.push(
+				// 	Babel.transform(source, {
+				// 			plugins: [ myJsxPlugin ],
+				// 			presets: [
+				// 					["env", { "modules": false }],
+				// 					'react'
+				// 			],
+				// 			sourceType: "module"
+				// 	}).code
+				// 		.replace(/^.*export.*$/m, '')
+				// 		.replace("import React from 'react';\n", '')
+				// );
+				output.push(source
+					.replace(/^.*export.*$/m, '')
+					.replace("import React from 'react';\n", '')
 				);
 			}
-			return output.reverse().join('\n\n');
-		}
 
+			const allDeps = output.reverse().join('\n\n');
+			return allDeps;
+		}
+		
+		const testJsx = async () => {
+			const base = document.getElementsByTagName("base");
+			base[0].href = "/crosshj/email-client/client/";
+			const url = "index.jsx"; 
+			const testSrc = await fetch(url).then(x => x.text());
+			
+			return transformReact(
+				testSrc
+					.replace("import React from 'react';\n", '')
+					.replace("import { render } from 'react-dom';\n", '')
+				);
+		};
+
+		const babelAppendCallback = async () => {
+			input = await testJsx();
+			try {
+				Babel.transform(input, {
+						plugins: [ myCssPlugin, myJsxPlugin ],
+						presets: [
+								["env", { "modules": false }],
+								'react'
+						],
+						sourceType: "module"
+				});
+
+				input = input
+					.replace('//{{ IMPORTS }}', '\n\n'+ await transformDeps())
+				input = input.split('\n')
+					.filter(x => !(x.includes('.jsx') && x.includes('import')))
+					.join('\n');
+
+				let output = Babel.transform(input, {
+						plugins: [ myCssPlugin ],
+						presets: [
+								["env", { "modules": false }],
+								'react'
+						],
+						sourceType: "module"
+				}).code;
+				
+				const wrapTry = (script) => `
+					try {
+						${script}
+					} catch(e) {
+						console.log(${script});
+						console.error(e);
+					}
+				`;
+				xfrmScript.innerHTML = output;
+				document.body.appendChild(xfrmScript);
+			} catch(e){
+				console.log(e);
+				console.log(input);
+			}
+		};
 		const appendBabel = () => {
-				const babelUrl = "/shared/vendor/babel.min.js";
-				const babelAppendCallback = async () => {
-						let output = Babel.transform(input, {
-								plugins: [ myCssPlugin, myJsxPlugin ],
-								presets: [
-										["env", { "modules": false }],
-										'react'
-								],
-								sourceType: "module"
-						}).code;
-						output = output.replace('//{{ IMPORTS }}', '\n\n'+ await transformDeps());
-						xfrmScript.innerHTML = output;
-						document.body.appendChild(xfrmScript);
-				};
-				appendScript(babelUrl, babelAppendCallback);
+			const babelUrl = "/crosshj/fiug-plugins/vendor/babel.min.js";
+			appendScript(babelUrl, babelAppendCallback);
 		};
 
 		const appendHscript = () => {

@@ -46,8 +46,10 @@ const recieveMessage = (timeout=10000) => {
 	});
 };
 
-const createGraph = async (graphObject, baseUrl="..") => {
-	const graph = await createIframe(baseUrl + '/.templates/d3-graph.html/::preview::/?message=true&chrome=false');
+const createGraph = async (graphObject) => {
+	const graph = await createIframe(
+		'/crosshj/fiug-plugins/.templates/d3-graph.html/::preview::/?message=true&chrome=false'
+	);
 	graph.style.width = '100%'
 	graph.style.height =  "32em";
 
