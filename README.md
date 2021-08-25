@@ -12,12 +12,24 @@ After install, files with the corresponding extension will be injected into the 
 One exception to this, files with `json` extension will be served by template if the json contents described an object with a property `type` equal to `{{file extension}}`.
 `d3-graph.html` is an example of this.
 
+### examples
+
+example templates can be found in the `.templates` folder at the root of this repository.
+Examples of files which use these templates can be found in the following folders at the root of this repository: `binary`, `documents`, `graphics`, and `languages`.
+
 
 ### plugins \[WIP\]
 
-plugins will work similar to templates, but will offer tighter integration with the service worker and file change life-cycle.  More will follow as becomes available.
+> plugins will work similar to templates, but will offer tighter integration with the service worker and file change life-cycle.  More will follow as becomes available.
 
+### store
+
+> once plugins are fleshed out, a store fascade will be created to host plugins.  This store should serve as the means for fiug to determine if an unrecognized file can be supported.  Support could include syntax highlighting, file icons, templates, and/or plugins.
 
 ### tutorial \[WIP\]
 
 > insert video showing how to use templates here
+
+### todo
+
+- [ ] dependencies.json - need to load all of these to cache for all templates to work
