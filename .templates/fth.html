@@ -11,7 +11,8 @@ uses https://github.com/remko/waforth
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="mobile-web-app-capable" content="yes">
-		<script src="/shared/vendor/stylus.min.js"></script>
+		<script src="/crosshj/fiug-plugins/vendor/stylus.min.js"></script>
+		
 		<base target="_blank" href="../../">
 	</head>
 
@@ -112,7 +113,7 @@ uses https://github.com/remko/waforth
 </script>
 
 <script type="module">
-	import WAForth from '/shared/vendor/waforth/WAForth.js';
+	import WAForth from '/crosshj/fiug-plugins/vendor/waforth/WAForth.js';
 	window.WAForth = WAForth;
 </script>
 
@@ -124,7 +125,7 @@ uses https://github.com/remko/waforth
 		];
 		await appendUrls(deps)
 
-		const watUrl = '/shared/vendor/waforth/waforth.wat';
+		const watUrl = '/crosshj/fiug-plugins/vendor/waforth/waforth.wat';
 		const watText = await (await fetch(watUrl)).text();;
 		const wasmBinary = '';
 

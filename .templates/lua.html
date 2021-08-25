@@ -11,7 +11,7 @@ uses https://github.com/vvanders/wasm_lua
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="mobile-web-app-capable" content="yes">
-		<script src="/shared/vendor/stylus.min.js"></script>
+		<script src="/crosshj/fiug-plugins/vendor/stylus.min.js"></script>
 		<base target="_blank" href="../../">
 	</head>
 
@@ -113,8 +113,9 @@ uses https://github.com/vvanders/wasm_lua
 
 	(async() => {
 		await appendUrls(imports)
-		const luaWasmUrl = '/shared/vendor/wasm_lua/main.wasm';
-		const luaJsUrl = '/shared/vendor/wasm_lua/main.js';
+
+		const luaWasmUrl = 'https://raw.githubusercontent.com/crosshj/fiug-plugins/main/vendor/wasm_lua/main.wasm';
+		const luaJsUrl = '/crosshj/fiug-plugins/vendor/wasm_lua/main.js';
 
 		const outputEl = document.createElement('pre');
 		outputEl.className = "log";

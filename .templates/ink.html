@@ -9062,6 +9062,7 @@ window.run = (code, stdout) => {
 		source = templateInput.includes('{{template_'+'input}}')
 			? 'log("no source input")'
 			: templateInput
+		console.log(source);
 	} catch(e){
 		`log(${error.message})`
 	}

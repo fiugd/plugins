@@ -11,7 +11,7 @@ uses https://github.com/kanaka/pascal.js
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="mobile-web-app-capable" content="yes">
-		<script src="/shared/vendor/stylus.min.js"></script>
+		<script src="/crosshj/fiug-plugins/vendor/stylus.min.js"></script>
 		<base target="_blank" href="../../">
 	</head>
 
@@ -122,9 +122,9 @@ uses https://github.com/kanaka/pascal.js
 
 		const deps = [
 			...imports,
-			"/shared/vendor/pascal/parse.js",
-			"/shared/vendor/pascal/ieee754.js",
-			"/shared/vendor/pascal/ir.js",
+			"/crosshj/fiug-plugins/vendor/pascal/parse.js",
+			"/crosshj/fiug-plugins/vendor/pascal/ieee754.js",
+			"/crosshj/fiug-plugins/vendor/pascal/ir.js",
 		];
 		await appendUrls(deps)
 		
@@ -152,14 +152,14 @@ uses https://github.com/kanaka/pascal.js
 		})(XMLHttpRequest.prototype);
 
 
-		XHR_PREFIX = "/shared/vendor/llvm.js/";
+		XHR_PREFIX = "https://raw.githubusercontent.com/crosshj/fiug-plugins/main/vendor/llvm.js/";
 		const llvmUrls = [
-			"/shared/vendor/llvm.js/compiler.js",
+			"/crosshj/fiug-plugins/vendor/llvm.js/compiler.js",
 		];
 		await appendUrls(llvmUrls);
 		XHR_PREFIX = "";
 
-		XHR_PREFIX = "/shared/vendor/pascal/"
+		XHR_PREFIX = "https://raw.githubusercontent.com/crosshj/fiug-plugins/main/vendor/pascal/"
 		const parser = new parse.Parser();
 		let ast = parser.parse(codeFromComment);
 
@@ -167,7 +167,7 @@ uses https://github.com/kanaka/pascal.js
 		const ir = IR_API.normalizeIR(IR_API.toIR(ast));
 		//const new_ir = llvmDis(llvmAs(ir));
 
-		XHR_PREFIX = "/shared/vendor/llvm.js/";
+		XHR_PREFIX = "https://raw.githubusercontent.com/crosshj/fiug-plugins/main/vendor/llvm.js/";
 		let js ='';
 		print = function(x) { js += x; };
 		compile(ir);
