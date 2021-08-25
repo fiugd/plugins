@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "querystringify": "/node_modules/querystringify/index.js"
+  },
+  "scopes": {
+    "/node_modules/socksjs-client/": {
+      "querystringify": "/node_modules/socksjs-client/querystringify/index.js"
+    }
+  }
+}

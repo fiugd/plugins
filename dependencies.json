@@ -1,5 +1,5 @@
 {
-	resources: [
+	"dependencies": [
 		"/shared/vendor/showdown.1.9.1.min.js",
 		"/shared/css/github-markdown.min.css",
 		"/shared/vendor/preact.standalone.module.js",
@@ -77,7 +77,6 @@
 		"/shared/images/forest_fog_dark_127172_1920x1080.jpg",
 		"/shared/images/9cfbf2a3ef56089624822bedbea2da64.gif",
 		"/shared/images/8f0b34aa3fed21ec78784a3f52f1728c.gif",
-
 		"/shared/images/thumb-1920-774078.jpg",
 
 		"/shared/vendor/go/playground.js",
