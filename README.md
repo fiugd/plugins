@@ -34,9 +34,9 @@ Examples of files which use these templates can be found in the following folder
 
 - [ ] dependencies.json - need to load all of these to cache for all templates to work
 - [ ] broken templates:
-	- scm?
 	- go
-	- ink? - doesn't show the default text running from template, but does fine running .ink file
-	- forth
 	- julia
 	- csharp
+	- scm - problem with default, but file runs fine
+	- ink - doesn't show the default text running from template, but does fine running .ink file
+	- forth - problem with default, but file runs fine

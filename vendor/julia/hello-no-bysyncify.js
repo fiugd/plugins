@@ -7,7 +7,9 @@ Module.expectedDataFileDownloads++;
 (function() {
     var loadPackage = function(metadata) {
         var PACKAGE_PATH;
-        if (typeof window === "object") {
+        if(XHR_PREFIX){
+            PACKAGE_PATH = XHR_PREFIX;
+        } else if (typeof window === "object") {
             PACKAGE_PATH = window["encodeURIComponent"](window.location.pathname.toString().substring(0, window.location.pathname.toString().lastIndexOf("/")) + "/")
         } else if (typeof location !== "undefined") {
             PACKAGE_PATH = encodeURIComponent(location.pathname.toString().substring(0, location.pathname.toString().lastIndexOf("/")) + "/")

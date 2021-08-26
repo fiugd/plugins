@@ -26,6 +26,7 @@ const deps = [
 	for(var i=0, len=10; i<len; i++){
 		results.push(fib(i))
 	}
-	console.log(results.join('\n'))
+
+	document.body.innerHTML += '<pre>'+results.join('\n')+'</pre>';
 
 })();
