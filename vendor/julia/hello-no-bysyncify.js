@@ -405,6 +405,8 @@ if (ENVIRONMENT_IS_NODE) {
 } else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
     if (ENVIRONMENT_IS_WORKER) {
         scriptDirectory = self.location.href
+    } else if (XHR_PATH){
+        scriptDirectory = XHR_PATH;
     } else if (document.currentScript) {
         scriptDirectory = document.currentScript.src
     }
@@ -1069,7 +1071,7 @@ var dataURIPrefix = "data:application/octet-stream;base64,";
 function isDataURI(filename) {
     return String.prototype.startsWith ? filename.startsWith(dataURIPrefix) : filename.indexOf(dataURIPrefix) === 0
 }
-var wasmBinaryFile = (XHR_PREFIX || '') + "hello-no-bysyncify.wasm";
+var wasmBinaryFile = "hello-no-bysyncify.wasm";
 if (!isDataURI(wasmBinaryFile)) {
     wasmBinaryFile = locateFile(wasmBinaryFile)
 }
