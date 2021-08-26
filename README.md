@@ -32,11 +32,12 @@ Examples of files which use these templates can be found in the following folder
 
 ### todo
 
-- [ ] dependencies.json - need to load all of these to cache for all templates to work
+- [ ] dependencies.json
+	- load these to browser cache?
 - [ ] broken templates:
 	- go
-	- julia
 	- csharp
-	- scm - problem with default, but file runs fine
-	- ink - doesn't show the default text running from template, but does fine running .ink file
-	- forth - problem with default, but file runs fine
+- [ ]slightly broken templates:
+	- scm - problem with template default, but file previews fine
+	- ink - problem with template default, but file previews fine
+	- forth - problem with template default, but file previews fine
