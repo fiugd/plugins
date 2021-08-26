@@ -7,6 +7,7 @@ Module.expectedDataFileDownloads++;
 (function() {
     var loadPackage = function(metadata) {
         var PACKAGE_PATH;
+        XHR_PREFIX = XHR_PREFIX || "";
         if(XHR_PREFIX){
             PACKAGE_PATH = XHR_PREFIX;
         } else if (typeof window === "object") {
@@ -405,8 +406,8 @@ if (ENVIRONMENT_IS_NODE) {
 } else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
     if (ENVIRONMENT_IS_WORKER) {
         scriptDirectory = self.location.href
-    } else if (XHR_PATH){
-        scriptDirectory = XHR_PATH;
+    } else if (XHR_PREFIX){
+        scriptDirectory = XHR_PREFIX;
     } else if (document.currentScript) {
         scriptDirectory = document.currentScript.src
     }
