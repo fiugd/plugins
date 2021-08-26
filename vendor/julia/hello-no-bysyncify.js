@@ -1069,7 +1069,7 @@ var dataURIPrefix = "data:application/octet-stream;base64,";
 function isDataURI(filename) {
     return String.prototype.startsWith ? filename.startsWith(dataURIPrefix) : filename.indexOf(dataURIPrefix) === 0
 }
-var wasmBinaryFile = "hello-no-bysyncify.wasm";
+var wasmBinaryFile = (XHR_PREFIX || '') + "hello-no-bysyncify.wasm";
 if (!isDataURI(wasmBinaryFile)) {
     wasmBinaryFile = locateFile(wasmBinaryFile)
 }
