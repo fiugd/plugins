@@ -27,7 +27,7 @@ Module.expectedDataFileDownloads++;
         var PACKAGE_UUID = metadata.package_uuid;
         function fetchRemotePackage(packageName, packageSize, callback, errback) {
             var xhr = new XMLHttpRequest;
-            xhr.open("GET", packageName, true);
+            xhr.open("GET", (XHR_PREFIX || '') + packageName, true);
             xhr.responseType = "arraybuffer";
             xhr.onprogress = function(event) {
                 var url = packageName;
