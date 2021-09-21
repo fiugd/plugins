@@ -1,3 +1,8 @@
+/*
+	https://github.com/Keno/julia-wasm
+	https://keno.github.io/julia-wasm/website/repl.htm
+*/
+
 var Module = typeof Module !== "undefined" ? Module : {};
 if (!Module.expectedDataFileDownloads) {
     Module.expectedDataFileDownloads = 0;

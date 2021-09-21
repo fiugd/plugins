@@ -1,3 +1,7 @@
+/*
+	https://github.com/remko/waforth
+*/
+
 const isSafari =
   typeof navigator != "undefined" &&
   /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
