@@ -1,5 +1,3 @@
-import '/crosshj/fiug-plugins/vendor/stylus.min.js';
-
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const alreadyAppended = {};
