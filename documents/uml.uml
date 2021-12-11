@@ -1,0 +1,66 @@
+# plantuml mode: https://github.com/ftomassetti/codemirror_plantuml
+# example
+
+title Apple Store Subscription
+
+participantspacing equal
+
+fontawesome f10b Mobile #orange
+fontawesome f233 "API" as api #1da1f2
+fontawesome f1c0 "DB" as db #1da1f2
+fontawesome f179 "App Store" as store #cccccc
+participant Auth0
+
+Mobile->Auth0: Login
+activate Auth0
+Auth0-->Mobile: UserInfo
+deactivate Auth0
+
+parallel on
+note left of Mobile:check
+Mobile->api: MobileHasActiveSubscription
+parallel off
+activate api
+api->db: schema.graphql:cypher
+db-->api: keeper.active, receipt.active, r.type=subscription, expiration > r.expire
+api-->Mobile: boolean
+deactivate api
+
+
+parallel on
+note left of Mobile:subscribe
+Mobile->store: IAP purchase module
+parallel off
+activate store
+store-->Mobile: purchaseDetails
+
+
+parallel on
+note left of Mobile:verify
+Mobile->api: MobileVerifyInAppPurchase(purchaseDetails)
+parallel off
+activate api
+api->store: resolvers: appleVerifyPurchase
+store-->api: (v1 store IAP notification)
+api->>db: CreateOrUpdatePurchase
+api-->Mobile: isVerified
+deactivate api
+
+parallel on
+note left of Mobile:complete
+Mobile->store: IAP purchase module
+parallel off
+store-->Mobile: purchase details
+
+note right of store:notification
+store->>api: POST: /apple-iap-listener (v1 store IAP notification)
+deactivate store
+activate api
+api->>db: CreateOrUpdatePurchase
+deactivate api
+
+
+#https://sequencediagram.org/
+#https://plantuml.com/sequence-diagram
+#https://sequencediagram.org/instructions.html
+
