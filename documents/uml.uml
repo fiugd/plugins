@@ -17,7 +17,7 @@ Auth0-->Mobile: UserInfo
 deactivate Auth0
 
 parallel on
-note left of Mobile:check
+#note left of Mobile:check
 Mobile->api: MobileHasActiveSubscription
 parallel off
 activate api
@@ -28,7 +28,7 @@ deactivate api
 
 
 parallel on
-note left of Mobile:subscribe
+#note left of Mobile:subscribe
 Mobile->store: IAP purchase module
 parallel off
 activate store
@@ -36,7 +36,7 @@ store-->Mobile: purchaseDetails
 
 
 parallel on
-note left of Mobile:verify
+#note left of Mobile:verify
 Mobile->api: MobileVerifyInAppPurchase(purchaseDetails)
 parallel off
 activate api
@@ -47,12 +47,12 @@ api-->Mobile: isVerified
 deactivate api
 
 parallel on
-note left of Mobile:complete
+#note left of Mobile:complete
 Mobile->store: IAP purchase module
 parallel off
 store-->Mobile: purchase details
 
-note right of store:notification
+#note right of store:notification
 store->>api: POST: /apple-iap-listener (v1 store IAP notification)
 deactivate store
 activate api
