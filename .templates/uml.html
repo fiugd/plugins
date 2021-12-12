@@ -53,8 +53,8 @@
 {{template_input}}
 -->
 	</code_in>
-	<body>
-	</body>
+	<body></body>
+	
 </html>
 
 <script>
@@ -72,8 +72,7 @@
 </script>
 
 <script>
-
-	const observe = (targetNode, callback) => {
+	const observeChildList = (targetNode, callback) => {
 		const config = { childList: true };
 		const observer = new MutationObserver(() => {
 			try {
@@ -82,23 +81,23 @@
 			} catch(e){}
 		});
 		observer.observe(targetNode, config);
-	}
+	};
+
+	observeChildList(document.body, () => {
+		const svg = document.querySelector('svg');
+		let { clientWidth: width, clientHeight: height } = svg;
+		//width+=600;
+		svg.setAttribute("viewBox",`0 0 ${width} ${height}`);
+		svg.removeAttribute("width");
+		svg.removeAttribute("height");
+		svg.setAttribute("preserveAspectRatio", "");
+	});
 
 	(async () => {
 		const code = await getCode('/fiugd/plugins/documents/uml.uml');
 		const d = Diagram.parse(code);
 		const options = {theme: 'simple'};
 		d.drawSVG(document.body, options);
-
-		observe(document.body, () => {
-			const svg = document.querySelector('svg');
-			let { clientWidth: width, clientHeight: height } = svg;
-			//console.log({ width, height })
-			width+=600;
-			svg.setAttribute("viewBox",`0 0 ${width} ${height}`);
-			svg.removeAttribute("width");
-			svg.removeAttribute("height");
-			//svg.setAttribute("preserveAspectRatio", "meet");
-		});
 	})();
+
 </script>
