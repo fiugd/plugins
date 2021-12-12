@@ -48,23 +48,19 @@
 		}
 	</style>
 
-	<code_in>
-<!--
+	<script>
+const codeIn = `
 {{template_input}}
--->
-	</code_in>
+`.trim();
+	</script>
 	<body></body>
 	
 </html>
 
 <script>
 	const getCode = async (defaultFile) => {
-		const codeIn = document.querySelector('code_in');
-		const codeFromComment = Array.from(codeIn.childNodes)
-				.filter(x => x.nodeType === 8)
-				.map(x => x.data).join('\n');
-		if(codeFromComment.trim() !== '{{'+'template_input'+'}}'){
-			return codeFromComment;
+		if(codeIn !== '{{'+'template_input'+'}}'){
+			return codeIn;
 		}
 		const defaultContents = await fetch(defaultFile).then(x => x.text());
 		return defaultContents || '';
