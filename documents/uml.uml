@@ -5,16 +5,16 @@ participant Bart as B
 participant Carl as C
 participant Dan as D
 
-#Note left of A: something \\non the left
-# Note right of D: something\\n on the right
+note left of A: something \\non the left
+note right of D: something\\n on the right
 
 A->B: solid
 B-->C: dashed
 C->>D: open arrow
 D-->>A: dashed open arrow
 
-# Example of a comment.
-#Note left of A: Note to the\\n left of A
+# Example of a comment
+note left of A: Note to the\\n left of A
 Note right of A: Note to the\\n right of A
 Note over A: Note over A
 Note over A,B: Note over\\n both A and B
@@ -29,4 +29,4 @@ Andrew->>China: I'm great!
 #https://sequencediagram.org/instructions.html
 #https://www.bottlecaps.de/rr/ui - railroad
 #https://github.com/ftomassetti/codemirror_plantuml
-
+#https://foo123.github.io/examples/codemirror-grammar
