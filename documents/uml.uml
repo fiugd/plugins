@@ -1,32 +1,32 @@
-title: Here is a title
+title: An Example Sequence Diagram
 
-participant Andy as A
-participant Ben as B
+participant Ace as A
+participant Bart as B
 participant Carl as C
 participant Dan as D
 
-Note left of A: something on the left
-Note right of D: something on the right
+#Note left of A: something \\non the left
+# Note right of D: something\\n on the right
 
-A->B: Normal line
-B-->C: Dashed line
-C->>D: Open arrow
-D-->>A: Dashed open arrow
+A->B: solid
+B-->C: dashed
+C->>D: open arrow
+D-->>A: dashed open arrow
 
 # Example of a comment.
-Note left of A: Note to the\n left of A
-Note right of A: Note to the\n right of A
+#Note left of A: Note to the\\n left of A
+Note right of A: Note to the\\n right of A
 Note over A: Note over A
-Note over A,B: Note over both A and B
+Note over A,B: Note over\\n both A and B
 
-Andrew->China: Says Hello
-Note right of China: China thinks\\nabout it
+Andrew->China: Hello!
+Note right of China: China\\nthinks
 China-->Andrew: How are you?
-Andrew->>China: I am good thanks!
+Andrew->>China: I'm great!
 
 #https://sequencediagram.org/
 #https://plantuml.com/sequence-diagram
 #https://sequencediagram.org/instructions.html
-#https://www.bottlecaps.de/rr/ui
+#https://www.bottlecaps.de/rr/ui - railroad
 #https://github.com/ftomassetti/codemirror_plantuml
 
