@@ -1,0 +1,101 @@
+<!--
+
+-->
+
+<!doctype html>
+<html lang="en" id="html">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="color-scheme" content="dark light">
+		<base target="_blank" href="../../">
+
+		<script src="https://bramp.github.io/js-sequence-diagrams/js/webfont.js"></script>
+		<script src="https://bramp.github.io/js-sequence-diagrams/js/snap.svg-min.js"></script>
+		<script src="https://bramp.github.io/js-sequence-diagrams/js/underscore-min.js"></script> 
+		<script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams/dist/sequence-diagram.js"></script>
+	</head>
+	
+	<style>
+		::-webkit-scrollbar { width: 5px; }
+		::-webkit-scrollbar-track { background: transparent; }
+		::-webkit-scrollbar-thumb { background: #888; }
+		::-webkit-scrollbar-thumb:hover { background: #555; }
+		body {
+			background: #1d1d1d;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		body img { width: 100%; image-rendering: pixelated; }
+		svg rect {
+			fill: #1a1a1a !important;
+		}
+		svg, svg line, svg rect {
+			stroke: #aaa;
+			fill: #aaa;
+			stroke-width: 1.3 !important;
+		}
+		svg text {
+			stroke-width: 0 !important;
+		}
+	</style>
+
+	<code_in>
+<!--
+{{template_input}}
+-->
+	</code_in>
+	<body>
+	</body>
+</html>
+
+<script>
+	const getCode = async (defaultFile) => {
+		const codeIn = document.querySelector('code_in');
+		const codeFromComment = Array.from(codeIn.childNodes)
+				.filter(x => x.nodeType === 8)
+				.map(x => x.data).join('\n');
+		if(codeFromComment.trim() !== '{{'+'template_input'+'}}'){
+			return codeFromComment;
+		}
+		const defaultContents = await fetch(defaultFile).then(x => x.text());
+		return defaultContents || '';
+	};
+</script>
+
+<script>
+
+	const observe = (targetNode, callback) => {
+		const config = { childList: true };
+		const observer = new MutationObserver(() => {
+			try {
+				callback();
+				observer.disconnect();
+			} catch(e){}
+		});
+		observer.observe(targetNode, config);
+	}
+
+	(async () => {
+		const code = await getCode('/fiugd/plugins/documents/uml.uml');
+		const d = Diagram.parse(code);
+		const options = {theme: 'simple'};
+		d.drawSVG(document.body, options);
+
+		observe(document.body, () => {
+			const svg = document.querySelector('svg');
+			let { clientWidth: width, clientHeight: height } = svg;
+			//console.log({ width, height })
+			width+=600;
+			svg.setAttribute("viewBox",`0 0 ${width} ${height}`);
+			svg.setAttribute("width", "");
+			svg.setAttribute("height", "");
+			//svg.setAttribute("preserveAspectRatio", "meet");
+		});
+	})();
+</script>
