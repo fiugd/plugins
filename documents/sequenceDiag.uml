@@ -1,0 +1,26 @@
+sequenceDiagram
+	title: An Example Sequence Diagram
+
+	participant Ace as A
+	participant Bart as B
+	participant Carl as C
+	participant Dan as D
+
+	note left of A: something<br> on the left
+	note right of D: something<br> on the right
+
+	A->B: solid
+	B-->C: dashed
+	C->>+D: open arrow
+	D-->>-A: dashed open arrow
+
+	# Example of a comment
+	note left of A: Note to the<br> left of A
+	note right of A: Note to the<br> right of A
+	note over A: Note over A
+	Note over A,B: Note over<br> both A and B
+
+	Andrew->China: Hello!
+	Note right of China: China<br> thinks
+	China-->Andrew: How are you? 
+	Andrew->>China: I'm great!
