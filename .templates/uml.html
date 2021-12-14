@@ -74,6 +74,7 @@ const codeIn = `
 
 <script>
 	const umlToMermaid = (uml) => {
+		const isSeqDiag = uml.includes('sequenceDiagram');
 		const split = uml.split('\n');
 		const pMapper = (line) => {
 			if(line.includes('participant') &&
@@ -89,6 +90,8 @@ const codeIn = `
 			.replace(/\\n/g, '<br>')
 		};
 		const arrow = (line) => {
+			if(!isSeqDiag) return line;
+
 			// convert -> to -) where not ->>
 			return line
 				.replace(/->(?!>)/, "-)");
