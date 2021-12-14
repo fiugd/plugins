@@ -1,3 +1,4 @@
+sequenceDiagram
 title: An Example Sequence Diagram
 
 participant Ace as A
@@ -10,17 +11,17 @@ note right of D: something\\n on the right
 
 A->B: solid
 B-->C: dashed
-C->>D: open arrow
-D-->>A: dashed open arrow
+C->>+D: open arrow
+D-->>-A: dashed open arrow
 
 # Example of a comment
-note left of A: Note to the\\n left of A
-Note right of A: Note to the\\n right of A
+note left of A: Note to the\n left of A
+Note right of A: Note to the\n right of A
 Note over A: Note over A
 Note over A,B: Note over\\n both A and B
 
 Andrew->China: Hello!
-Note right of China: China\\nthinks
+Note right of China: China\n thinks
 China-->Andrew: How are you?
 Andrew->>China: I'm great!
 
