@@ -1,0 +1,13 @@
+sequenceDiagram
+	participant LocalMachine as local
+	participant InternalStore as internal
+	participant ReleaseStore as release
+
+	local->internal
+
+
+	#A->B: solid
+	#B-->C: dashed
+	#C->>+D: open arrow
+	#D-->>-A: dashed open arrow
+
