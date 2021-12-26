@@ -54,6 +54,20 @@
 			/*font-family: monospace !important;*/
 /* 			font-size: 1.2em; */
 		}
+		i {
+			font-size: 14px !important;
+		}
+		svg div {
+			padding: 0.2em 0.5em;
+		}
+		#drawing .edgeLabel div {
+			background-color: #474949 !important;
+			border: 0.1px solid;
+		}
+		#drawing .edgeLabel span {
+			background-color: transparent !important;
+		}
+		.hidden { display: none !important; }
 	</style>
 
 	<script>
@@ -114,7 +128,7 @@ const codeIn = `
 		mermaid.initialize({
 			theme: 'dark', 
 			//themeCSS: '.node rect { fill: red; }',
-			logLevel: 3,
+			//logLevel: 3,
 			securityLevel: 'loose',
 			startOnLoad: false,
 			//flowchart: { curve: 'basis' },
@@ -124,6 +138,16 @@ const codeIn = `
 
 		mermaid.render('drawing', umlToMermaid(code), function(svgCode) {
 			document.body.innerHTML = svgCode;
+			const edgeLabels = Array.from(document.querySelectorAll('#drawing .edgeLabel div'));
+			edgeLabels.forEach(label => {
+				// account for border
+				const container = label.parentNode;
+				container.setAttribute('width', Number(container.getAttribute('width')) +1);
+
+				// hide empty edge labels
+				if(label.textContent.trim()) return;
+				label.closest('.edgeLabel').classList.add('hidden')
+			})
 		});
 	})();
 

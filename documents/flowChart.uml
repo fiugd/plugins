@@ -2,14 +2,14 @@
 %% search at : https://fontawesome.com/v4.7/icons/
 
 graph TD
-	Bee[fa:fa-twitter Twitter  .]
+	Bee[fa:fa-twitter Twitter]
 
-	A[Christmas fa:fa-tree  .] -->| fa:fa-user-circle User         ` | B(Go shopping)
-	B --> C{fa:fa-snowflake-o Twitter .}
-	B --> G[/fa:fa-pencil Pencil ./]
+	A[Christmas fa:fa-tree] -->| fa:fa-user-circle User | B(Go shopping)
+	B --> C{fa:fa-snowflake-o Twitter}
+	B --> G[/fa:fa-pencil Pencil/]
 	C ==>|One| D[Laptop]
 	C -->|Two| E[iPhone]
-	C -->|Three| F[fa:fa-car Car  .]
+	C -->|Three| F[fa:fa-car Car]
 
 	subgraph section
 		B
