@@ -1,12 +1,18 @@
 %%{init: {'theme':'dark'}}%%
+%% search at : https://fontawesome.com/v4.7/icons/
+
 graph TD
-	A[Christmas] -->|Get money| B(Go shopping)
-	B --> C{Let me think}
-	B --> G[/Another/]
+	Bee[fa:fa-twitter Twitter  .]
+
+	A[Christmas fa:fa-tree  .] -->| fa:fa-user-circle User         ` | B(Go shopping)
+	B --> C{fa:fa-snowflake-o Twitter .}
+	B --> G[/fa:fa-pencil Pencil ./]
 	C ==>|One| D[Laptop]
 	C -->|Two| E[iPhone]
-	C -->|Three| F[fa:fa-car Car]
+	C -->|Three| F[fa:fa-car Car  .]
+
 	subgraph section
+		B
 		C
 		D
 		E
