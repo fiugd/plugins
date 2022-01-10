@@ -1,0 +1,64 @@
+@entry
+def main {
+  document.body.innerHTML = "In: <input><br>Out: <span>"
+  var input = document.querySelector("input")
+  var result = document.querySelector("span")
+
+  # This uses a condensed version of the Shunting Yard Algorithm
+  # (https://en.wikipedia.org/wiki/Shunting-yard_algorithm)
+  var compute = => {
+    var text string = input.value
+    var tokens = text.split(RegExp.new("(\\d+|[()+\\-*/])"))
+    var output List<double> = []
+    var stack List<int> = []
+    var priority = {'+': 1, '-': 1, '*': 2, '/': 2, '(': 3}
+    var binary = (callback fn(double, double) double) => {
+      var right = output.takeLast
+      var left = output.takeLast
+      output.append(callback(left, right))
+    }
+
+    # Get a lexer for free by using a capturing regex to split
+    # on the tokens we want to match and ignoring all of the
+    # even-numbered strings (everything between the tokens).
+    # Append a null character at the end as a sentinel value.
+    tokens.append("\0")
+    for i in 0..tokens.count {
+      if i % 2 == 0 { continue }
+      var op = tokens[i][0]
+      switch op {
+        case '+', '-', '*', '/', '(', ')', '\0' {
+          var p = priority.get(op, 0)
+          while !stack.isEmpty && priority.get(stack.last, 3) > p {
+            switch stack.last {
+              case '+' { binary((a, b) => a + b) }
+              case '-' { binary((a, b) => a - b) }
+              case '*' { binary((a, b) => a * b) }
+              case '/' { binary((a, b) => a / b) }
+              case '(' { if op != ')' { break } }
+              default { break }
+            }
+            if stack.takeLast == '(' { break }
+          }
+          if op != ')' && op != '\0' { stack.append(op) }
+        }
+        default { output.append(parseFloat(tokens[i])) }
+      }
+    }
+
+    result.textContent = output.first.toString
+  }
+
+  input.value = "(1 + 2) * 3"
+  input.oninput = compute
+  input.focus()
+  input.select()
+  compute()
+}
+
+@import {
+  const document dynamic
+  const RegExp dynamic
+
+  def parseFloat(text string) double
+}

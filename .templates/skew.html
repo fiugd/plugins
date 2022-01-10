@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" id="html">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<script src="/crosshj/fiug-plugins/vendor/stylus.min.js"></script>
+		<base target="_blank" href="../../">
+		<script src="http://skew-lang.org/skew-api.min.js"></script>
+	</head>
+
+	<code_in>
+<!--
+{{template_input}}
+-->
+	</code_in>
+
+	<body>
+	see <a href="http://skew-lang.org/">skew language</a>
+	</body>
+
+	<script>
+		const codeIn = document.querySelector('code_in');
+		let codeFromComment = Array.from(codeIn.childNodes)
+				.filter(x => x.nodeType === 8)
+				.map(x => x.data).join('\n');
+		if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+			codeFromComment = `
+			`.replace(new RegExp('				', 'g'), '');
+		}
+		codeFromComment = `${codeFromComment}`;
+	</script>

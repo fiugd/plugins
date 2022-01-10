@@ -1,0 +1,22 @@
+
+https://fastvm.github.io/xori/
+https://github.com/FastVM/minivm
+
+```
+import("../io.paka")
+puts("Hello, World!") 
+```
+
+
+
+```
+import("io.paka")
+
+def itoa(i) {
+    if i < 10 {
+        return ['0' + i]
+    } else {
+        return itoa(i / 10) ~ ['0' + i % 10]
+    }
+}
+```
