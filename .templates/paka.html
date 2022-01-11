@@ -1,22 +1,182 @@
+<!doctype html>
+<html lang="en" id="html">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<base target="_blank" href="../../">
+		<script src="https://fastvm.github.io/xori/minivm.js"></script>
+	</head>
+	
+	<style>
+		body {
+			margin: 1.5em;
+			overflow: hidden;
+			color: #ccc;
+			font-family: monospace;
+		}
+	</style>
 
+	<code_in>
+<!--
+{{template_input}}
+-->
+	</code_in>
+
+	<body>
+		<pre></pre>
+	</body>
+
+<!--
 https://fastvm.github.io/xori/
 https://github.com/FastVM/minivm
+-->
+	<script type="module">
+		const outputPre = document.querySelector('pre');
+	
+		const getCode = async () => {
+			const codeIn = document.querySelector('code_in');
+			let codeFromComment = Array.from(codeIn.childNodes)
+					.filter(x => x.nodeType === 8)
+					.map(x => x.data).join('\n');
+			if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
+				codeFromComment = await fetch('../languages/paka.paka').then(x => x.text());
+			}
+			return `${codeFromComment}`;
+		};
+		const showCode = (code) => document.body.innerHTML = `<pre>${code}</pre>`;
+		const code = await getCode();
+		//showCode(code);
 
-```
-import("../io.paka")
-puts("Hello, World!") 
-```
+		const minivmMod = await (async () => {
+			const module = {};
+			webpackChunktraffic[0][1]['./paka/minivm/minivm.js'](module);
+			return { default: module.exports };
+		})();
+		
+		const AsyncFunction = Object.getPrototypeOf(async () => { }).constructor;
+		const vm_none_t = 'void';
+		const vm_state_t = 'int';
+		const vm_size_t = 'int';
+		const vm_num_t = 'int';
+		const vm_obj_t = 'int';
+		const typesLikeArray = [Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array, BigUint64Array, BigUint64Array];
 
+		window.addEventListener("message", (event) => {
+			const { type, value } = event.data;
 
+			if (type === 'end') {
+				// lastTime = null;
+				// localStorage.removeItem('vm.save');
+			} else if (type == 'line') {
+				console.log(type, value);
+				outputPre.innerText += (value);
+			}
+		}, false); 
+		
+		const saveWith = (vm, state) => {
+			return async (out, jsObj) => {
+					const saveArr = async (arr) => {
+							const ret = vm.ccall('vm_api_new', vm_obj_t, [vm_state_t, vm_size_t], [state, arr.length]);
+							for (let i = 0; i < arr.length; i++) {
+									const obj = await save(arr[i]);
+									vm.ccall('vm_api_set', vm_none_t, [vm_state_t, vm_obj_t, vm_size_t, vm_obj_t], [state, ret, i, obj]);
+							}
+							return ret;
+					};
 
-```
-import("io.paka")
+					const saveNum = async (num) => {
+							return vm.ccall('vm_api_of_num', vm_obj_t, [vm_state_t, vm_num_t], [state, num]);
+					}
 
-def itoa(i) {
-    if i < 10 {
-        return ['0' + i]
-    } else {
-        return itoa(i / 10) ~ ['0' + i % 10]
-    }
-}
-```
+					const saveNone = async () => {
+							return vm.ccall('vm_api_of_none', vm_obj_t, [vm_state_t], [state]);
+					};
+
+					const save = async (obj) => {
+							if (typeof x === 'string') {
+									return await saveArr(Uint8Array.from(obj).buffer);
+							}
+							if (Array.isArray(obj)) {
+									return await saveArr(obj);
+							}
+							if (typeof obj === 'number') {
+									return await saveNum(obj);
+							}
+							if (obj == null) {
+									return await saveNone();
+							}
+							if (obj instanceof Response) {
+									return await save(await obj.arrayBuffer());
+							}
+							if (obj instanceof ArrayBuffer) {
+									return await save(new Uint8Array(obj));
+							}
+							for (const type of typesLikeArray) {
+									if (obj instanceof type) {
+											return await saveArr(Array.from(obj));
+									}
+							}
+							throw new Error(`cannot serialize: ${obj}`);
+					};
+
+					const vmObj = await save(jsObj);
+					vm.ccall('vm_api_reset', vm_none_t, [vm_state_t], [state]);
+					vm.ccall('vm_api_stack_set', vm_none_t, [vm_state_t, vm_size_t, vm_obj_t], [state, out, vmObj]);
+			};
+	};
+
+		const runState = async (state, vm, todo) => {
+			let rem = 0;
+			while (state !== 0) {
+					if (rem < 0) {
+							rem = 2 ** 20;
+							vm.ccall('vm_api_save', 'void', ['int'], [state]);
+					}
+					rem -= 1;
+					const save = saveWith(vm, state)
+					while (todo.length > 0) {
+							let [out, cur] = todo.pop();
+							const res = await cur();
+							await save(out, res);
+					}
+					state = vm.ccall('vm_run', 'int', ['int'], [state]);
+			}
+			self.postMessage({ type: 'end' });
+		}
+
+		const runSrc = async (src) => {
+			const { default: create } = minivmMod;
+
+			let todo = [];
+
+			const args = ['./boot.vm', '-e', `import("browser.paka") ${src}`];
+			const mod = {};
+			mod["print"] = (txt) => {
+					self.postMessage({ type: 'line', value: txt });
+			};
+			mod.vm_do_eval_func = (out, str) => {
+					todo.push([out, new AsyncFunction(str)]);
+			};
+			mod.vm_do_saved = (buf) => {
+					self.postMessage({ type: 'save', value: buf });
+			};
+
+			mod.vm_do_file_put_func = (str) => { };
+
+			const vm = await create(mod);
+			for (const arg of args) {
+					vm.ccall('vm_main_add_arg', 'void', ['string'], [arg]);
+			}
+			let state = vm.ccall('vm_main_default', 'int', [], []);
+			runState(state, vm, todo);
+		};
+		
+		runSrc(code.replace(/\t/gm, '  '))
+		
+		//console.log(minivm);
+	</script>
+</html>

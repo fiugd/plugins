@@ -1,0 +1,21 @@
+import("../io.paka")
+
+def fib(n) {
+	if n < 2 {
+		return n
+	}
+	return fib(n-2) + fib(n-1)
+}
+
+def fibPrint(n) {
+	i = 0
+	while i <= n {
+		x = fib(i)
+		print(x)
+		putchar(' ')
+		i = i + 1
+	}
+	puts(' ')
+}
+
+fibPrint(9)
