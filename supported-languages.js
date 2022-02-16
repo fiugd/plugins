@@ -1,3 +1,9 @@
+/*
+this file designed to be ran with:
+
+preview supported-languages.js
+*/
+
 import { htmlToElement } from './.tools/misc.js';
 
 const state = {
