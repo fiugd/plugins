@@ -1,11 +1,3 @@
-/*
-this file designed to be ran with:
-
-preview supported-languages.js
-*/
-
-import { htmlToElement } from './.tools/misc.js';
-
 const state = {
 	merged: [
 		{ title: 'apl.apl' },
@@ -62,7 +54,7 @@ const others = [
 	'basic | vb', 'cobol', 'fortran', 'algol',
 	'assembly', 'smalltalk', 'racket', 'octave',
 	'autohotkey', 'objective c', 'haxe', 'pyret',
-	'befunge',
+	'befunge', 'haxe'
 ];
 
 const notes = `
@@ -74,7 +66,10 @@ const notes = `
 	imba: https://imba.io/try/
 `;
 
-const render = () => {
+const render = async () => {
+	const misc = await import('./.tools/misc.js');
+	const { htmlToElement } = misc;
+
 	const style = () => { return `
 			<style>
 				@import '/index.css';
@@ -297,4 +292,13 @@ const render = () => {
 		</div>
 	`))
 };
-render();
+
+// ran with node
+if(typeof processWrite !== "undefined"){
+	processWrite("\nusage: \npreview supported-languages.js");
+}
+
+// ran with preview
+if(typeof document !== "undefined"){
+	render();
+}
