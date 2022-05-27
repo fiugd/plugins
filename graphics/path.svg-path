@@ -1,8 +1,4 @@
-M 5 5
-L 15 5
-L 15 15
-L 5 15
-Z
+# https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths 
 
 viewBox = -0.5 -0.5 21 21
 stroke-width = 0.1
@@ -10,3 +6,15 @@ stroke = #555
 fill = transparent
 #stroke-linecap = butt
 #shape-rendering = crispEdges
+
+M 3 3
+L 17 3
+L 17 17
+L 3 17
+Z
+
+M 5 5
+L 15 5
+L 15 15
+L 5 15
+Z
