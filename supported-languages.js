@@ -293,12 +293,15 @@ const render = async () => {
 	`))
 };
 
+const isNode = typeof window === "undefined";
+const isBrowser = typeof document !== "undefined";
+
 // ran with node
-if(typeof processWrite !== "undefined"){
-	processWrite("\nusage: \npreview supported-languages.js");
+if(isNode){
+	console.log("\nusage: \npreview supported-languages.js");
 }
 
 // ran with preview
-if(typeof document !== "undefined"){
+if(isBrowser){
 	render();
 }
