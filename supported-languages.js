@@ -67,6 +67,12 @@ const notes = `
 `;
 
 const render = async () => {
+	const isNode = typeof window === "undefined";
+	if(isNode){
+		console.log("\nusage: \npreview supported-languages.js");
+		return;
+	}
+
 	const misc = await import('./.tools/misc.js');
 	const { htmlToElement } = misc;
 
@@ -293,15 +299,4 @@ const render = async () => {
 	`))
 };
 
-const isNode = typeof window === "undefined";
-const isBrowser = typeof document !== "undefined";
-
-// ran with node
-if(isNode){
-	console.log("\nusage: \npreview supported-languages.js");
-}
-
-// ran with preview
-if(isBrowser){
-	render();
-}
+render();
