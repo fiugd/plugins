@@ -67,8 +67,7 @@ const notes = `
 `;
 
 const render = async () => {
-	const isNode = typeof window === "undefined";
-	if(isNode){
+	if(typeof document === "undefined"){
 		console.log("\nusage: \npreview supported-languages.js");
 		return;
 	}
