@@ -59,6 +59,7 @@ const others = [
 
 const notes = `
 	Codemirror Supported Languages: https://codemirror.net/mode/
+	Github Supported Languages: https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
 	Programming Language Paradigms: https://www.info.ucl.ac.be/~pvr/paradigmsDIAGRAMeng108.jpg
 	CST/AST from many languages: http://unifiedjs.com/
 	JVM languages potential solution: https://plasma-umass.org/doppio-demo/
