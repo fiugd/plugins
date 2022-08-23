@@ -425,6 +425,7 @@ see also: https://npmcompare.com/compare/markdown-it,marked,remarkable,showdown
 				//extensions: [taskListEnablerExtension]
 			};
 			const converter = new showdown.Converter(converterOpts);
+			converter.setFlavor('github');
 
 			const output = converter.makeHtml(
 				templateInput
