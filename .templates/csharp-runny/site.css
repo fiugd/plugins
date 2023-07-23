@@ -1,0 +1,24 @@
+app {
+    display: none;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    /* margin: 0; */
+}
+body > textarea {
+    height: 250px;
+}
+body > * + * {
+    margin-top: 1em;
+}
+
+.runButton {
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.outputBox, .inputBox {
+    resize: vertical;
+}

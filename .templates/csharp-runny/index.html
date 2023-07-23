@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width">
+        <title>Runny (csharp)</title>
+        <link href="site.css" rel="stylesheet" />
+    </head>
+
+    <body>
+        <app></app>
+<textarea class="inputBox">using System;
+
+public class Fib {
+    static int fib(int n) {
+        if (n <= 1) return 1;
+        return fib(n - 1) + fib(n - 2);
+    }
+
+    public static void Main(string[] args) {
+        for (int i = 0; i <= 9; i++) {
+            Console.WriteLine(fib(i));
+        }
+    }
+}</textarea>
+        <button class="runButton">Run</button>
+        <textarea class="outputBox"></textarea>
+    </body>
+
+    <script>
+        let isReady;
+        const inputBox = document.querySelector('.inputBox');
+
+        window.monacoInterop = {
+            'editors': {},
+            'initialize': () => {},
+            'setCode': () => {},
+            'getCode': (...args) => {
+                if(!isReady){
+                    isReady = true;
+                    window.whenReady();
+                    return '';
+                }
+                const code = inputBox.value.trim();
+                return code;
+            }
+        }
+
+        window.whenReady = () => {
+            const RunButton = document.querySelector('app button.btn');
+            const runNew = document.querySelector('.runButton');
+            runNew.onclick = () => RunButton.click();
+
+            const OutputText = document.querySelector('app .content textarea:last-child');
+            const outputNew = document.querySelector('.outputBox');
+            Object.defineProperty(OutputText, 'value', {
+                set: (value) => {
+                    outputNew.value = value;
+                }
+            });
+
+            console.log('DOT NET IS READY!!!');
+        };
+    </script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</html>
