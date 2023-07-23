@@ -3,12 +3,22 @@ app {
 }
 
 body {
+    margin: 1.5em;
+    overflow: hidden;
+    color: #ccc;
+    font-family: monospace;
+}
+
+body {
     display: flex;
     flex-direction: column;
     /* margin: 0; */
 }
 body > textarea {
     height: 250px;
+	background: transparent;
+	color: #ccc;
+	border: 0px;
 }
 body > * + * {
     margin-top: 1em;
@@ -21,4 +31,10 @@ body > * + * {
 }
 .outputBox, .inputBox {
     resize: vertical;
+	resize: none;
+}
+
+.inputBox,
+.runButton {
+	display: none;
 }

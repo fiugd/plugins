@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<!-- base href="https://blazorcomponents.github.io/CompileBlazorInBlazor/" / --> 
+		<!-- base href="/" / -->
+	</head>
+
+	<style>
+		body {
+			margin: 1.5em;
+			overflow: hidden;
+			color: #ccc;
+			font-family: monospace;
+		}
+	</style>
+
+	<script id="source" type="text/input">{{template_input}}</script>
+
+	<script id="defaultSrc" type="text/default">
+		using System;
+
+		public class Example
+		{
+			public static string Hello(string yourName) =>
+				$"Hello {yourName}, I'm a message from C# and this message generated at {DateTime.Now}";
+			public static int Sum(int a, int b) => a + b;
+		}
+	</script>
+
+	<body>
+		<pre id="output"></pre>
+		<app>Loading...</app>
+	</body>
+
+	<script>
+		(async () => {
+		
+		function manualScript({ code, url, transform, attrs, id }) {
+			function setAttributes(el, attrs) {
+				for(var key in attrs) {
+					el.setAttribute(key, attrs[key]);
+				}
+			}
+			return new Promise(async (resolve) => {
+				var s = document.createElement('script');
+				s.type = 'text/javascript';
+				if(attrs){
+					setAttributes(s, attrs);
+				}
+				if(url){
+					code = await fetch(url).then(x=>x.text());
+				}
+				if(id) s.id = id;
+				if(transform){
+					code = transform(code)
+				}
+				s.appendChild(document.createTextNode(code));
+				document.body.appendChild(s);
+				resolve(); 
+			});
+		}
+		
+		const proxy = 'https://api.allorigins.win/raw?url=';
+		window.myfetch = (...args) => {
+			console.log(args)
+			if(args[0].includes('_framework') && !args[0].includes('blazor.boot'))
+				args[0] = proxy+"https://blazorcomponents.github.io/CompileBlazorInBlazor/_framework/_bin/" + args[0];
+			if(args[0].includes('_framework') && args[0].includes('blazor.boot'))
+				args[0] = proxy+"https://blazorcomponents.github.io/CompileBlazorInBlazor/" + args[0];
+			if(args[0] === "mono.wasm")
+				args[0] = proxy+"https://blazorcomponents.github.io/CompileBlazorInBlazor/_framework/wasm/mono.wasm";
+			return fetch(...args);
+		}
+
+		await manualScript({
+			url: "https://blazorcomponents.github.io/CompileBlazorInBlazor/_framework/wasm/mono.js",
+			transform: src => src
+				.replace(/fetch/g, 'myfetch'),
+			id: 'mono'
+		});
+		await manualScript({
+			url: "https://blazorcomponents.github.io/CompileBlazorInBlazor/_framework/blazor.webassembly.js",
+			transform: src => src
+				.replace(/fetch/g, 'myfetch'),
+				// .replace(/_framework\/wasm\/mono.js/g, proxy+'https://blazorcomponents.github.io/CompileBlazorInBlazor/_framework/wasm/mono.js')
+				// .replace(/_framework\/wasm\/mono.wasm/g, proxy+'https://blazorcomponents.github.io/CompileBlazorInBlazor/_framework/wasm/mono.wasm'),
+			attrs: { autostart: false },
+			id: 'blazor'
+		});
+		//_framework/wasm/mono.js
+		
+		//https://www.samprof.com/2018/12/15/compile-csharp-and-blazor-inside-browser-en
+		//https://blazorcomponents.github.io/CompileBlazorInBlazor/
+		//https://github.com/BlazorComponents/CompileBlazorInBlazor/blob/master/CompileBlazorInBlazor/CompileService.cs
+		
+		//https://csharp.hotexamples.com/examples/-/Mono.CSharp.Evaluator/-/php-mono.csharp.evaluator-class-examples.html
+		//https://daveaglick.com/posts/blazor-razor-webassembly-and-mono
+		//https://dotnet.microsoft.com/learn/aspnet/blazor-tutorial/try
+		
+		
+		//https://remibou.github.io/How-to-keep-js-object-reference-in-Blazor/
+
+		/*
+		const p = {};
+		const d = {};
+		const f = {};
+		function y(e, t, n) {
+				var a = "[" + e + "]" + t + "." + n, i = d[a];
+				if (!i) {
+						if (!(i = o(function(e) {
+								var t = f[e];
+								if (!t) {
+										if (!(t = r(e)))
+												throw new Error('Could not find assembly "' + e + '"');
+										f[e] = t
+								}
+								return t
+						}(e), t, n)))
+								throw new Error('Could not find type "' + n + '" in namespace "' + t + '" in assembly "' + e + '"');
+						d[a] = i
+				}
+				return i
+		}
+		function g(e, t, n, r) {
+				var o = "[" + e + "]" + t + "." + n + "::" + r
+					, i = p[o];
+				if (!i) {
+						if (!(i = a(y(e, t, n), r, -1)))
+								throw new Error('Could not find method "' + r + '" on type "' + t + "." + n + '"');
+						p[o] = i
+				} 
+				return i
+		}
+		const c = {
+			attachDebuggerHotkey: () => {},
+			hasDebuggingEnabled: () => {}
+		};
+		const m = "appBinDir";
+		
+		const _r = (e) => {
+			var t = e.substring(e.lastIndexOf("/") + 1)
+				, n = t.indexOf("?");
+			return n < 0 ? t : t.substring(0, n);
+		};
+		const s = {
+			getFileNameFromUrl: _r,
+			getAssemblyNameFromUrl: function(e) {
+					return _r(e).replace(/\.dll$/, "")
+			}
+		};
+		var b = document.createElement("a");
+		var t = window;
+		
+		const DotNet = {}
+		{
+			const n={};
+			function c(e, t, r) {
+					if (!n.hasOwnProperty(e))
+							throw new Error("There is no pending async call with ID " + e + ".");
+					var o = n[e];
+					delete n[e],
+					t ? o.resolve(r) : o.reject(r)
+			}
+			function l(e, t, r, a) {
+					if (e && r)
+							throw new Error("For instance method calls, assemblyName should be null. Received '" + e + "'.");
+					var i = o++
+						, u = new Promise(function(e, t) {
+							n[i] = {
+									resolve: e,
+									reject: t
+							}
+					}
+					);
+					try {
+							var l = JSON.stringify(a, h);
+							t.monoPlatform.dispatcher.beginInvokeDotNetFromJS(i, e, t, r, l);
+					} catch (e) {
+							c(i, !1, e)
+					}
+					return u
+			}
+			const m = function() {
+					function e(e) {
+							this._id = e
+					}
+					return e.prototype.invokeMethod = function(e) {
+							for (var t = [], n = 1; n < arguments.length; n++)
+									t[n - 1] = arguments[n];
+							return u(null, e, this._id, t)
+					}
+					,
+					e.prototype.invokeMethodAsync = function(e) {
+							for (var t = [], n = 1; n < arguments.length; n++)
+									t[n - 1] = arguments[n];
+							return l(null, e, this._id, t)
+					}
+					,
+					e.prototype.dispose = function() {
+							l(null, "__Dispose", this._id, null).catch(function(e) {
+									return console.error(e)
+							})
+					}
+					,
+					e.prototype.serializeAsArg = function() {
+							return {
+									__dotNetObject: this._id
+							}
+					}
+					,
+					e
+			}();
+			function s() {
+					if (null !== a)
+							return a;
+					throw new Error("No .NET call dispatcher has been set.")
+			}
+			function h(e, t) {
+					return t instanceof m ? t.serializeAsArg() : t
+			}
+			DotNet.invokeMethodAsync = function(e, t) {
+					for (var n = [], r = 2; r < arguments.length; r++)
+							n[r - 2] = arguments[r];
+					return l(e, t, null, n)
+			};
+		}
+
+		t.monoPlatform = { 
+			start: function(e) {
+				return new Promise(function(n, f) {
+					c.attachDebuggerHotkey(e),
+					t.Browser = {
+							init: function() {}
+					},
+					t.Module = function(e, n, f) {
+							var d = {}
+								, p = ["DEBUGGING ENABLED"];
+							return d.print = function(e) {
+									return p.indexOf(e) < 0 && console.log("WASM: " + e)
+							}
+							,
+							d.printErr = function(e) {
+									return console.error("WASM: " + e)
+							}
+							,
+							d.preRun = [],
+							d.postRun = [],
+							d.preloadPlugins = [],
+							d.locateFile = function(e) {
+									switch (e) {
+									case "mono.wasm":
+											return "_framework/wasm/mono.wasm";
+									default:
+											return e
+									}
+							}
+							,
+							d.preRun.push(function() {
+									var t = Module.cwrap("mono_wasm_add_assembly", null, ["string", "number", "number"]);
+									r = Module.cwrap("mono_wasm_assembly_load", "number", ["string"]),
+									o = Module.cwrap("mono_wasm_assembly_find_class", "number", ["number", "string", "string"]),
+									a = Module.cwrap("mono_wasm_assembly_find_method", "number", ["number", "string", "number"]),
+									i = Module.cwrap("mono_wasm_invoke_method", "number", ["number", "number", "number"]),
+									u = Module.cwrap("mono_wasm_string_get_utf8", "number", ["number"]),
+									l = Module.cwrap("mono_wasm_string_from_js", "number", ["string"]),
+									MONO.loaded_files = [],
+									e.forEach(function(e) {
+											var n = s.getFileNameFromUrl(e)
+												, r = "blazor:" + n;
+											addRunDependency(r),
+											function(e) {
+													return new Promise(function(t, n) {
+															var r = new XMLHttpRequest;
+															r.open("GET", e, !0),
+															r.responseType = "arraybuffer",
+															r.onload = function() {
+																	if (200 == r.status || 0 == r.status && r.response) {
+																			var e = new Uint8Array(r.response);
+																			t(e)
+																	} else
+																			n(r)
+															}
+															,
+															r.onerror = n,
+															r.send(void 0)
+													}
+													)
+											}(e).then(function(o) {
+													var a, i = Module._malloc(o.length);
+													new Uint8Array(Module.HEAPU8.buffer,i,o.length).set(o),
+													t(n, i, o.length),
+													MONO.loaded_files.push((a = e,
+													b.href = a,
+													b.href)),
+													removeRunDependency(r)
+											}, function(e) {
+													e instanceof XMLHttpRequest && 404 === e.status && n.match(/\.pdb$/) || f(e),
+													removeRunDependency(r)
+											})
+									})
+							}),
+							d.postRun.push(function() {
+									MONO.mono_wasm_setenv("MONO_URI_DOTNETRELATIVEORABSOLUTE", "true");
+									Module.cwrap("mono_wasm_load_runtime", null, ["string", "number"])(m, c.hasDebuggingEnabled() ? 1 : 0);
+									MONO.mono_wasm_runtime_is_ready = !0;
+
+									const e = g("Mono.WebAssembly.Interop", "Mono.WebAssembly.Interop", "MonoWebAssemblyJSRuntime", "InvokeDotNet");
+									const r = g("Mono.WebAssembly.Interop", "Mono.WebAssembly.Interop", "MonoWebAssemblyJSRuntime", "BeginInvokeDotNet");
+									const o = g("Mono.WebAssembly.Interop", "Mono.WebAssembly.Interop", "MonoWebAssemblyJSRuntime", "EndInvokeJS");
+
+									monoPlatform.dispatcher = {
+											//callId: number
+											//assemblyName: string | null
+											//methodIdentifier: string,
+											//dotNetObjectId: any | null,
+											//argsJson: string 
+											beginInvokeDotNetFromJS: function(e, n, o, a, i) {
+
+													if (!a && !n)
+															throw new Error("Either assemblyName or dotNetObjectId must have a non null value.");
+													var u = a
+														? a.toString()
+														: n;
+													const argsList = [
+														e
+															? t.monoPlatform.toDotNetString(e.toString())
+															: null,
+														t.monoPlatform.toDotNetString(u),
+														t.monoPlatform.toDotNetString(o),
+														t.monoPlatform.toDotNetString(i)
+													];
+													console.log(argsList);
+													t.monoPlatform.callMethod(r, null, argsList)
+											},
+											//endInvokeJSFromDotNet: (asyncHandle, succeeded, serializedArgs): void => {
+											endInvokeJSFromDotNet: function(e, n, r) {
+													t.monoPlatform.callMethod(o, null, [t.monoPlatform.toDotNetString(r)])
+											},
+											//invokeDotNetFromJS: (assemblyName, methodIdentifier, dotNetObjectId, argsJson) => {
+											invokeDotNetFromJS: function(n, r, o, a) {
+													var i = t.monoPlatform.callMethod(
+														e,
+														null,
+														[
+															n
+																? t.monoPlatform.toDotNetString(n)
+																: null,
+															t.monoPlatform.toDotNetString(r),
+															o
+																? t.monoPlatform.toDotNetString(o.toString())
+																: null,
+															t.monoPlatform.toDotNetString(a)
+														]);
+													return i
+														? t.monoPlatform.toJavaScriptString(i)
+														: null
+											}
+									};
+									//CompileBlazorInBlazor 
+									//DotNet.attachDispatcher(monoPlatform.dispatcher),
+									
+									setTimeout(async () => {
+										
+										const foo = await DotNet.invokeMethodAsync('BlazorApp', 'foo');
+										console.log({ foo: t.monoPlatform.toJavaScriptString(foo) });
+										
+										// const foo = await monoPlatform.dispatcher.beginInvokeDotNetFromJS(
+										// 	0, 
+										// 	"BlazorApp",
+										// 	"foo",
+										// 	null,
+										// 	'[]'
+										// );
+										
+// 										monoPlatform.dispatcher.invokeDotNetFromJS("CompileBlazorInBlazor", "CompileAndRun", null, `
+
+// using System.Text;
+
+// namespace CompileBlazorInBlazor.Demo
+// {
+//     public class RunClass
+//     {
+//         public string Run(string name, int count)
+//         {
+//             var sb = new StringBuilder();
+//             for (int i = 0; i < count; i++)
+//             {
+//                 sb.AppendLine($"{i}) Hello, {name}!");
+//             }
+
+//             return sb.ToString();
+//         }
+//     }
+// }
+ 
+// 										`)
+// 										const foo = await monoPlatform.dispatcher.beginInvokeDotNetFromJS(
+// 											0, 
+// 											"Microsoft.AspNetCore.Blazor",
+// 											"DispatchEvent",
+// 											null,
+// 											'[{"browserRendererId":0,"eventHandlerId":4,"eventArgsType":"mouse","eventFieldInfo":null},"{\"type\":\"click\",\"detail\":1,\"screenX\":1766,\"screenY\":129,\"clientX\":326,\"clientY\":446,\"button\":0,\"buttons\":0,\"ctrlKey\":false,\"shiftKey\":false,\"altKey\":false,\"metaKey\":false}"]'
+// 										);
+// 										console.log(foo)
+									},3000);
+
+									n() //Promise resolve
+							}),
+							d
+					}(e, n, f),
+					function() {
+							if ("undefined" == typeof WebAssembly || !WebAssembly.validate)
+								throw new Error("This browser does not support WebAssembly.");
+							var e = document.createElement("script");
+							e.src = "_framework/wasm/mono.js",
+							e.defer = !0,
+							document.body.appendChild(e)
+					}()
+				})
+			},
+			findMethod: g,
+			callEntryPoint: function(e, n, r) {
+					var o = n.split("::");
+					if (2 != o.length)
+							throw new Error("Malformed entry point method name; could not resolve class name and method name.");
+					var a = o[0]
+						, i = o[1]
+						, u = a.lastIndexOf(".")
+						, l = u > -1 ? a.substring(0, u) : ""
+						, s = u > -1 ? a.substring(u + 1) : a
+						, c = t.monoPlatform.findMethod(e, l, s, i);
+					t.monoPlatform.callMethod(c, null, r)
+			},
+			callMethod: function(e, n, r) {
+					if (r.length > 4)
+							throw new Error("Currently, MonoPlatform supports passing a maximum of 4 arguments from JS to .NET. You tried to pass " + r.length + ".");
+					var o = Module.stackSave();
+					try {
+							for (var a = Module.stackAlloc(r.length), u = Module.stackAlloc(4), l = 0; l < r.length; ++l)
+									Module.setValue(a + 4 * l, r[l], "i32");
+							Module.setValue(u, 0, "i32");
+							var s = i(e, n, a, u);
+							if (0 !== Module.getValue(u, "i32"))
+									throw new Error(t.monoPlatform.toJavaScriptString(s));
+							return s
+					} finally {
+							Module.stackRestore(o)
+					}
+			},
+			toJavaScriptString: function(e) {
+					var t = u(e)
+						, n = Module.UTF8ToString(t);
+					return Module._free(t),
+					n
+			},
+			toDotNetString: function(e) {
+					return l(e)
+			},
+			toUint8Array: function(e) {
+					var t = w(e)
+						, n = Module.getValue(t, "i32");
+					return new Uint8Array(Module.HEAPU8.buffer,t + 4,n)
+			},
+			getArrayLength: function(e) {
+					return Module.getValue(w(e), "i32")
+			},
+			getArrayEntryPtr: function(e, t, n) {
+					return w(e) + 4 + t * n
+			},
+			getObjectFieldsBaseAddress: function(e) {
+					return e + 8
+			},
+			readInt16Field: function(e, t) {
+					return Module.getValue(e + (t || 0), "i16")
+			},
+			readInt32Field: function(e, t) {
+					return Module.getValue(e + (t || 0), "i32")
+			},
+			readUint64Field: function(e, t) {
+					var n = e + (t || 0) >> 2
+						, r = Module.HEAPU32[n + 1];
+					if (r > v)
+							throw new Error("Cannot read uint64 with high order part " + r + ", because the result would exceed Number.MAX_SAFE_INTEGER.");
+					return r * h + Module.HEAPU32[n]
+			},
+			readFloatField: function(e, t) {
+					return Module.getValue(e + (t || 0), "float")
+			},
+			readObjectField: function(e, t) {
+					return Module.getValue(e + (t || 0), "i32")
+			},
+			readStringField: function(e, n) {
+					var r = Module.getValue(e + (n || 0), "i32");
+					return 0 === r ? null : t.monoPlatform.toJavaScriptString(r)
+			},
+			readStructField: function(e, t) {
+					return e + (t || 0)
+			}
+		};
+		*/
+
+		/*
+		// https://github.com/BlazorComponents/CompileBlazorInBlazor/blob/master/CompileBlazorInBlazor/CompileService.cs
+		using System;
+		using System.Collections.Generic;
+		using System.IO;
+		using System.Linq;
+		using System.Net.Http;
+		using System.Reflection;
+		using System.Text;
+		using System.Threading.Tasks;
+
+		using Microsoft.AspNetCore.Blazor.Services;
+		using Microsoft.AspNetCore.Components;
+		using Microsoft.AspNetCore.Razor.Language;
+		using Microsoft.CodeAnalysis;
+		using Microsoft.CodeAnalysis.CSharp;
+		using Microsoft.CodeAnalysis.Emit;
+
+		*/
+
+		const libs = [
+			"/_bin/CompileBlazorInBlazor.dll",
+			// "/_bin/Microsoft.AspNetCore.Authorization.dll",
+			"/_bin/Microsoft.AspNetCore.Blazor.dll",
+			"/_bin/Microsoft.AspNetCore.Components.dll",
+			// "/_bin/Microsoft.AspNetCore.Components.Forms.dll",
+			// "/_bin/Microsoft.AspNetCore.Components.Web.dll",
+			// "/_bin/Microsoft.AspNetCore.Metadata.dll",
+			"/_bin/Microsoft.AspNetCore.Razor.Language.dll",
+			// "/_bin/Microsoft.Bcl.AsyncInterfaces.dll",
+			"/_bin/Microsoft.CodeAnalysis.CSharp.dll",
+			"/_bin/Microsoft.CodeAnalysis.CSharp.resources.dll",
+			"/_bin/Microsoft.CodeAnalysis.dll",
+			"/_bin/Microsoft.CodeAnalysis.resources.dll",
+			// "/_bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+			// "/_bin/Microsoft.Extensions.DependencyInjection.dll",
+			// "/_bin/Microsoft.Extensions.Logging.Abstractions.dll",
+			// "/_bin/Microsoft.Extensions.Options.dll",
+			"/_bin/Microsoft.Extensions.Primitives.dll",
+			"/_bin/Microsoft.JSInterop.dll",
+			// "/_bin/Mono.Security.dll",
+			"/_bin/Mono.WebAssembly.Interop.dll",
+			"/_bin/mscorlib.dll",
+			"/_bin/System.Buffers.dll",
+			// "/_bin/System.Collections.Immutable.dll",
+			// "/_bin/System.ComponentModel.Annotations.dll",
+			"/_bin/System.Core.dll",
+			"/_bin/System.dll",
+			"/_bin/System.Memory.dll",
+			// "/_bin/System.Net.Http.dll",
+			// "/_bin/System.Numerics.dll",
+			// "/_bin/System.Numerics.Vectors.dll",
+			// "/_bin/System.Reflection.Metadata.dll",
+			"/_bin/System.Runtime.CompilerServices.Unsafe.dll",
+			"/_bin/System.Text.Encoding.CodePages.dll",
+			"/_bin/System.Text.Encodings.Web.dll",
+			"/_bin/System.Text.Json.dll",
+			"/_bin/System.Threading.Tasks.Extensions.dll",
+			"/_bin/System.Xml.dll",
+			// "/_bin/System.Xml.Linq.dll"
+		].map(x => {
+			return proxy + "https://blazorcomponents.github.io/CompileBlazorInBlazor/_framework" + x
+		});
+		libs.push('https://beta.fiug.dev/crosshj/fiug-welcome/.templates/BlazorApp.dll');
+		
+		// monoPlatform.start(libs);
+		setTimeout(async () => {
+			await Blazor.start(libs);
+			//const foo = await DotNet.invokeMethodAsync('BlazorApp', 'foo');
+			//console.log({ foo: t.monoPlatform.toJavaScriptString(foo) });
+			
+			const hello = await DotNet.invokeMethodAsync('BlazorApp', 'foo');
+			console.log(hello); //42
+			
+			/*
+			
+			https://github.com/dotnet/aspnetcore/tree/2d0c49d0fca0aaf37672e0aec1c011cfe6a2d6f2/src/Components/Web.JS/src/Platform/Mono
+
+			I need to get the above working so I can then create a DLL that will build C#
+			and then later build F# and VB.net and whatever else...
+			*/
+			
+		}, 2000);
+		})();
+	</script>
+
+	<script type="module">
+		(() => {
+			const outputPre = document.getElementById('output');
+			const getScript = (id) => document.getElementById(id).textContent.replace(/^\t\t/gm, '');
+			const logJSON = obj => console.log(JSON.stringify(obj, null, 2));
+
+			const source =  getScript("source");
+			const input = source === "{{"+"template_input"+"}}"
+				? getScript("defaultSrc")
+				: source;
+
+			const output = {};
+			const {
+				js_error_msg, row, column, endRow, endColumn, text, type,
+				js_code
+			} = output;
+
+			if(js_error_msg){
+				outputPre.innerHTML += js_error_msg;
+				return;
+			}
+			const run = (code) => {
+				const update = (...args) => {
+					outputPre.innerHTML += args.join(' ');
+				};
+				const exports = {};
+				eval(code);
+			}
+			run(js_code);
+		})()
+	</script>
+
+</html>
+
