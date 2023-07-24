@@ -55,7 +55,7 @@ const others = [
 	'basic | vb', 'cobol', 'fortran', 'algol',
 	'assembly', 'smalltalk', 'racket', 'octave',
 	'autohotkey', 'objective c', 'haxe', 'pyret',
-	'befunge', 'haxe'
+	'befunge',
 ];
 
 const notes = `
