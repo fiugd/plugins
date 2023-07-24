@@ -113,7 +113,7 @@ uses https://github.com/remko/waforth
 </script>
 
 <script type="module">
-	import WAForth from '/crosshj/fiug-plugins/vendor/waforth/WAForth.js';
+	import WAForth from '/fiugd/plugins/vendor/waforth/WAForth.js';
 	window.WAForth = WAForth;
 </script>
 
@@ -125,7 +125,7 @@ uses https://github.com/remko/waforth
 		];
 		await appendUrls(deps)
 
-		const watUrl = '/crosshj/fiug-plugins/vendor/waforth/waforth.wat';
+		const watUrl = '/fiugd/plugins/vendor/waforth/waforth.wat';
 		const watText = await (await fetch(watUrl)).text();;
 		const wasmBinary = '';
 
