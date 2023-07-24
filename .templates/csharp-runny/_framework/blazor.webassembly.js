@@ -4,6 +4,8 @@
 */
 const locationProxy = {
 	get href(){
+		if(window.baseURI) return window.baseURI;
+
 		const doctoredHref = document.location.href
 			.replace('/::preview::/', '')
 			.replace('index.html', '')
