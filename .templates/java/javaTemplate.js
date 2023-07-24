@@ -69,6 +69,7 @@ const setupOutput = () => {
 }
 
 const setupBrowserFS = async () => {
+	console.log('Setting up Doppio...')
 	const fs = BrowserFS.BFSRequire('fs');
 	const { Buffer } = BrowserFS.BFSRequire('buffer');
 	const mfs = new BrowserFS.FileSystem.MountableFileSystem();
@@ -120,6 +121,7 @@ const runCommand = (args) => {
 };
 
 const runClass = async ({ classpath, classname, args }) => {
+	console.log(`Running (${classpath}/${classname} ${args}) ...`)
 	const jvm = await getJVM({
 		// '/sys' is the path to a directory in the BrowserFS file system with:
 		// * vendor/java_home/*
@@ -145,6 +147,7 @@ const runClass = async ({ classpath, classname, args }) => {
 };
 
 const compile = async (path) => {
+	console.log(`Compiling Java (${path})...`)
 	//console.log({ path})
 	const args = [
 		'-classpath', '/home/classes/util',
