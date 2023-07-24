@@ -3,12 +3,13 @@ const state = {
 		{ title: 'apl.apl' },
 		{ title: 'assemblyscript.as', wasm: true },
 		{ title: 'brainfuck.bf' },
-		{ title: 'clojure.cljs' },
+		{ title: 'clojurescript.cljs' },
 		{ title: 'cpp.cpp'},
 		{ title: 'csharp.cs', wasm: true },
 		{ title: 'forth.fth', wasm: true },
 		{ title: 'golang.go' },
 		{ title: 'ink.ink' },
+		{ title: 'java.java' },
 		{ title: 'javascript.js' },
 		{ title: 'julia.jl', wasm: true },
 		{ title: 'lisp.lisp' },
@@ -27,10 +28,14 @@ const state = {
 	],
 	maybe: [
 		{ title: 'fsharp.fs', heat: 8 },
-		{ title: 'java.java', heat: 3 },
-		{ title: 'kotlin.kt', heat: 3 },
-		{ title: 'perl.pl' },
-		{ title: 'raku.raku' },
+		{ title: 'clojure.clj', heat: 6 },
+		{ title: 'kotlin.kt', heat: 6 },
+		{ title: 'groovy.gvy', heat: 6 },
+		{ title: 'frege.fr', heat: 6 },
+		{ title: 'haskell.hs', heat: 6 },
+		{ title: 'scala.sc', heat: 6 },
+		{ title: 'perl.pl', heat: 3 },
+		{ title: 'raku.raku', heat: 3  },
 	],
 	meh: [
 		{ title: 'ada.adb' },
@@ -40,7 +45,6 @@ const state = {
 		{ title: 'elixir.ex' },
 		{ title: 'elm.elm' },
 		{ title: 'erlang.erl' },
-		{ title: 'haskell.hs' },
 		{ title: 'nim.nim' },
 		{ title: 'pony.pony' },
 		{ title: 'rlang.r' },
@@ -63,10 +67,48 @@ const notes = `
 	Github Supported Languages: https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
 	Programming Language Paradigms: https://www.info.ucl.ac.be/~pvr/paradigmsDIAGRAMeng108.jpg
 	CST/AST from many languages: http://unifiedjs.com/
-	JVM languages potential solution: https://plasma-umass.org/doppio-demo/
 	smalltalk: https://amber-lang.net/
 	imba: https://imba.io/try/
 `;
+
+const extMap = (ext) => {
+	const mapped = {
+		js: 'javascript',
+		jl: 'julia',
+		fth: 'forth',
+		cljs: 'clojure',
+		clj: 'clojure',
+		bf: 'brainfuck',
+		as: 'assemblyscript',
+		pas: 'pascal',
+		pro: 'prolog',
+		py: 'python',
+		rb: 'ruby',
+		scm: 'scheme',
+		ts: 'typescript',
+		cs: 'csharp',
+		fs: 'fsharp',
+		kt: 'kotlin',
+		ml: 'ocaml',
+		paka: 'default',
+		gvy: 'default',
+		fr: 'default',
+		sc: 'default',
+		pl: 'perl',
+		adb: 'ada',
+		cr: 'crystal',
+		ex: 'elixir',
+		erl: 'erlang',
+		hs: 'haskell',
+		rs: 'rust'
+	}[ext];
+	if(mapped) return mapped;
+	return ext;
+};
+
+/* no need to edit after this mark unless making overarching changes */
+/* ================================================================= */
+
 
 const render = async () => {
 	if(typeof document === "undefined"){
@@ -222,36 +264,6 @@ const render = async () => {
 			${style()}
 		</div>
 	`);
-	const extMap = (ext) => {
-		const mapped = {
-			js: 'javascript',
-			jl: 'julia',
-			fth: 'forth',
-			cljs: 'clojure',
-			bf: 'brainfuck',
-			as: 'assemblyscript',
-			pas: 'pascal',
-			pro: 'prolog',
-			py: 'python',
-			rb: 'ruby',
-			scm: 'scheme',
-			ts: 'typescript',
-			cs: 'csharp',
-			fs: 'fsharp',
-			kt: 'kotlin',
-			ml: 'ocaml',
-			paka: 'default',
-			pl: 'perl',
-			adb: 'ada',
-			cr: 'crystal',
-			ex: 'elixir',
-			erl: 'erlang',
-			hs: 'haskell',
-			rs: 'rust'
-		}[ext];
-		if(mapped) return mapped;
-		return ext;
-	};
 	Object.keys(state).forEach(key => {
 		const list = state[key];
 		const el = htmlToElement(`
