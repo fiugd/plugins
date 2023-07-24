@@ -30,6 +30,12 @@ Examples of files which use these templates can be found in the following folder
 
 > insert video showing how to use templates here
 
+### supported programming languages
+
+> this image is created using `preview supported-languages.js`
+
+<img width="864" height="400" alt="image" src="https://github.com/fiugd/plugins/assets/93937172/82e251c0-b5ab-42c4-905d-3d6092a1036f">
+
 ### todo
 
 - [ ] dependencies.json
