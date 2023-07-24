@@ -17,16 +17,20 @@ https://www.biwascheme.org/
 </code_in>
 
 <body>
-	<h3></h3>
-	<pre>
-		<span>INPUT:</span>
+	<!--
+	<h3 class="page-heading"></h3>
+	<pre class="dual-pane">
+		<span class="label">INPUT:</span>
 		<code class="language-input language">
 		</code>
 
-		OUTPUT:
+		<span class="label">OUTPUT:</span>
 		<code class="language-output language">
 		</code>
 	</pre>
+	-->
+	<code class="language-output language">
+	</code>
 </body>
 
 <style>
@@ -36,6 +40,12 @@ https://www.biwascheme.org/
 			color: #ccc;
 			font-family: sans-serif;
 			background: #1a1a1a;
+	}
+
+	.page-heading,
+	.language-input.language,
+	.label {
+		display: none;
 	}
 
 	code {
@@ -49,7 +59,7 @@ https://www.biwascheme.org/
 
 	.language {
 			min-height: 155px;
-			background: #2d2d2d;
+			/* background: #2d2d2d; */
 			padding: 0px 10px 20px 10px;
 			margin: 15px 0px -8px 0px;
 			overflow-x: hidden;
@@ -94,6 +104,10 @@ https://www.biwascheme.org/
 
 			try {
 					var interpreter = new BiwaScheme.Interpreter();
+					interpreter.evaluate(code, (result) => {
+						doEach(result)
+					});
+					/*
 					(new Array(10)).fill().forEach((x, i) => {
 						interpreter.evaluate(code + `(fib ${i})`, function(result) {
 							if (result === undefined) { return; }
@@ -102,13 +116,14 @@ https://www.biwascheme.org/
 							doEach(`\nfib(${i}): ${result}`)
 						});
 					});
+					*/
 			} catch (e) {
 					console.error(e);
 			}
 	})();
 
 	async function letsGo(scriptUrl) {
-			document.querySelector('body h3').innerText = document.title;
+			//document.querySelector('body h3').innerText = document.title;
 
 			const codeIn = document.querySelector('code_in');
 			const inputDOM = document.querySelector('.language-input');
@@ -139,9 +154,11 @@ https://www.biwascheme.org/
 					.filter(x => x.nodeType === 8)
 					.map(x => x.data).join('\n');
 			if(codeFromComment.trim() === '{{'+'template_input'+'}}'){
-				codeFromComment = `(begin (display "yellow world"))`;
+				codeFromComment = `
+(string-append "hello, world" " " "(scheme)")
+				`.trim();
 			}
-			inputDOM.innerText = codeFromComment;
+			//!!inputDOM && (inputDOM.innerText = codeFromComment);
 
 			if (Array.isArray(scriptUrl)) {
 					for (let i = 0, len = scriptUrl.length; i < len; i++) {

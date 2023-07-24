@@ -43,6 +43,5 @@ Examples of files which use these templates can be found in the following folder
 - [ ] broken templates:
 	- ...
 - [ ] slightly broken templates:
-	- scm - problem with template default, but file previews fine
 	- ink - problem with template default, but file previews fine
 	- forth - problem with template default, but file previews fine
