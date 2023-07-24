@@ -122,9 +122,9 @@ uses https://github.com/kanaka/pascal.js
 
 		const deps = [
 			...imports,
-			"/crosshj/fiug-plugins/vendor/pascal/parse.js",
-			"/crosshj/fiug-plugins/vendor/pascal/ieee754.js",
-			"/crosshj/fiug-plugins/vendor/pascal/ir.js",
+			"/fiugd/plugins/vendor/pascal/parse.js",
+			"/fiugd/plugins/vendor/pascal/ieee754.js",
+			"/fiugd/plugins/vendor/pascal/ir.js",
 		];
 		await appendUrls(deps)
 		
@@ -152,14 +152,14 @@ uses https://github.com/kanaka/pascal.js
 		})(XMLHttpRequest.prototype);
 
 
-		XHR_PREFIX = "https://raw.githubusercontent.com/crosshj/fiug-plugins/main/vendor/llvm.js/";
+		XHR_PREFIX = "https://raw.githubusercontent.com/fiugd/plugins/main/vendor/llvm.js/";
 		const llvmUrls = [
-			"/crosshj/fiug-plugins/vendor/llvm.js/compiler.js",
+			"/fiugd/plugins/vendor/llvm.js/compiler.js",
 		];
 		await appendUrls(llvmUrls);
 		XHR_PREFIX = "";
 
-		XHR_PREFIX = "https://raw.githubusercontent.com/crosshj/fiug-plugins/main/vendor/pascal/"
+		XHR_PREFIX = "https://raw.githubusercontent.com/fiugd/plugins/main/vendor/pascal/"
 		const parser = new parse.Parser();
 		let ast = parser.parse(codeFromComment);
 
@@ -167,7 +167,7 @@ uses https://github.com/kanaka/pascal.js
 		const ir = IR_API.normalizeIR(IR_API.toIR(ast));
 		//const new_ir = llvmDis(llvmAs(ir));
 
-		XHR_PREFIX = "https://raw.githubusercontent.com/crosshj/fiug-plugins/main/vendor/llvm.js/";
+		XHR_PREFIX = "https://raw.githubusercontent.com/fiugd/plugins/main/vendor/llvm.js/";
 		let js ='';
 		print = function(x) { js += x; };
 		compile(ir);
