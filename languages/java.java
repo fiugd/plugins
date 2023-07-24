@@ -1,12 +1,18 @@
-import java.util.*;
 
-public class Fib {
-	static long fib(long n) {
-		if (n <= 1) return 1;
+public class Main {
+
+	static int fib(int n) {
+		if (n <= 1) return n;
 		return fib(n - 1) + fib(n - 2);
 	}
 
 	public static void main(String[] args) {
-		System.out.print(fib(46));
+		String[] arr = new String[10];
+		for (int i = 0; i <= 9; i++) {
+			arr[i] = fib(i) + "";
+		}
+		String joined = String.join(" ", arr);
+		System.out.print(joined);
 	}
+
 }
