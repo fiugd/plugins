@@ -12,6 +12,6 @@ public class Main {
 			arr[i] = fib(i) + "";
 		}
 		String joined = String.join(" ", arr);
-		System.out.print(joined);
+		System.out.println(joined);
 	}
 }
