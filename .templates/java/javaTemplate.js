@@ -4,9 +4,12 @@
 	todo: https://github.com/plasma-umass/doppio/tree/master/docs
 */
 
-const outputEl = document.querySelector('pre');
+const inputEl = document.querySelector('textarea.input')
+const outputEl = document.querySelector('pre.output');
 
 (async () => {
+	const code = inputEl.textContent;
+	console.log({ code })
 	const output = `
 		WIP:
 		see https://github.com/plasma-umass/doppio/tree/master/docs
