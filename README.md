@@ -41,8 +41,7 @@ Examples of files which use these templates can be found in the following folder
 - [ ] dependencies.json
 	- load these to browser cache?
 - [ ] broken templates:
-	- go
-	- csharp
+	- ...
 - [ ] slightly broken templates:
 	- scm - problem with template default, but file previews fine
 	- ink - problem with template default, but file previews fine
