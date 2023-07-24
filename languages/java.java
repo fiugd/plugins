@@ -14,5 +14,4 @@ public class Main {
 		String joined = String.join(" ", arr);
 		System.out.print(joined);
 	}
-
 }
