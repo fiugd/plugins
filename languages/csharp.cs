@@ -22,16 +22,19 @@ https://github.com/BlazorComponents/CompileBlazorInBlazor
 
 */
 
-
 using System;
 
 public class Fib {
-  static uint fib(uint n) {
-    if (n <= 1) return 1;
-    return fib(n - 1) + fib(n - 2);
-  }
+	static int fib(int n) {
+		if (n == 0) return 0;
+		if (n == 1) return 1;
+		return fib(n - 1) + fib(n - 2);
+	}
 
-  public static void Main(string[] args) {
-    Console.WriteLine(fib(46));
-  }
+	public static void Main(string[] args) {
+		for (int i = 0; i <= 9; i++) {
+			Console.Write(fib(i));
+			Console.Write(" ");
+		}
+	}
 }

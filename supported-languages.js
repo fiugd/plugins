@@ -5,6 +5,7 @@ const state = {
 		{ title: 'brainfuck.bf' },
 		{ title: 'clojure.cljs' },
 		{ title: 'cpp.cpp'},
+		{ title: 'csharp.cs', wasm: true },
 		{ title: 'forth.fth', wasm: true },
 		{ title: 'golang.go' },
 		{ title: 'ink.ink' },
@@ -24,7 +25,6 @@ const state = {
 		{ title: 'wasm.wat', wasm: true },
 	],
 	maybe: [
-		{ title: 'csharp.cs', heat: 8 },
 		{ title: 'fsharp.fs', heat: 8 },
 		{ title: 'java.java', heat: 3 },
 		{ title: 'kotlin.kt', heat: 3 },

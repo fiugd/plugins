@@ -25,7 +25,7 @@ int main(){
 	int n = 10;
 	int* results = fib(n);
 	for (int i = 0; i < 10; ++i) {
-		cout << results[i] << endl;
+		cout << results[i] << " ";
 	}
 	return 0;
 }
