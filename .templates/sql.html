@@ -92,7 +92,7 @@ https://github.com/kripken/sql.js
 		const { code, doEach, doAfter } = await letsGo(scriptUrl);
 
 		try {
-			const SQL = await initSqlJs({ locateFile: filename => `https://raw.githubusercontent.com/crosshj/fiug-plugins/main/vendor/${filename}` });
+			const SQL = await initSqlJs({ locateFile: filename => `https://raw.githubusercontent.com/fiugd/plugins/main/vendor/${filename}` });
 			const db = new SQL.Database();
 			const result = db.exec(code);
 			const mappedResult = result[0].values

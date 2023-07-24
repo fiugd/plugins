@@ -13,6 +13,7 @@ end;
 begin
 	for i := 0 to 9 do
 	begin
-		writeln(fib(i))
+		write(fib(i));
+		write(' ');
 	end
 end.

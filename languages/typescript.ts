@@ -27,6 +27,6 @@ const deps = [
 		results.push(fib(i))
 	}
 
-	document.body.innerHTML += '<pre>'+results.join('\n')+'</pre>';
+	document.body.innerHTML += '<pre>'+results.join(' ')+'</pre>';
 
 })();

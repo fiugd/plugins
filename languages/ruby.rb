@@ -6,4 +6,4 @@ def fib(n)
   fib_r(0, 1, n)
 end
 
-p (0..9).map{ |n| fib(n) }
+p (0..9).map{ |n| fib(n) }.join(' ')
