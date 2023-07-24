@@ -10,7 +10,7 @@ function Fibonacci($number){
 }
 
 for ($counter = 0; $counter < 10; $counter++){
-    echo Fibonacci($counter),' ';
+    echo Fibonacci($counter), ' ';
 }
 
 ?>
