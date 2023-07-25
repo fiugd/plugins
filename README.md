@@ -34,7 +34,7 @@ Examples of files which use these templates can be found in the following folder
 
 > this image is created using `preview supported-languages.js`
 
-<img width="864" height="1070" alt="image" src="https://github.com/fiugd/plugins/assets/93937172/82e251c0-b5ab-42c4-905d-3d6092a1036f">
+<img width="806" height="1030" alt="image" src="https://github.com/fiugd/plugins/assets/93937172/e606e025-8d69-485b-be57-d2ecd7e6df76">
 
 ### todo
 
